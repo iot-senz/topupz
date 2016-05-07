@@ -1,16 +1,21 @@
 package com.score.payz.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.score.payz.R;
@@ -52,6 +58,7 @@ public class HomeActivity extends FragmentActivity {
     private CircularImageView userImage;
     private TextView username;
 
+
     /**
      * {@inheritDoc}
      */
@@ -71,6 +78,19 @@ public class HomeActivity extends FragmentActivity {
      */
     protected void onResume() {
         super.onResume();
+
+        // enable foreground dispatch
+//        if (nfcAdapter != null) {
+//            nfcAdapter.enableForegroundDispatch(this, mPendingIntent, mIntentFilters, mNFCTechLists);
+//        }
+
+//        Intent intent = getIntent();
+//        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+//            Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+//
+//            NdefMessage message = (NdefMessage) rawMessages[0];
+//            Log.d(TAG, new String(message.getRecords()[0].getPayload()));
+//        }
     }
 
     /**
@@ -78,6 +98,10 @@ public class HomeActivity extends FragmentActivity {
      */
     protected void onPause() {
         super.onPause();
+
+        // disable foreground dispatch
+//        if (nfcAdapter != null)
+//            nfcAdapter.disableForegroundDispatch(this);
     }
 
     @Override
