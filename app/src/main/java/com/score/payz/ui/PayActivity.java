@@ -7,12 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
-import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +40,10 @@ public class PayActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pay_layout);
 
-        initNfc();
+        //initNfc();
         initUi();
+        initActionBar();
+        initPaymentDetails();
     }
 
     /**
@@ -54,10 +53,10 @@ public class PayActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        // enable foreground dispatch
-        if (nfcAdapter != null) {
-            nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, nfcIntentFilters, nfcTechLists);
-        }
+//        // enable foreground dispatch
+//        if (nfcAdapter != null) {
+//            nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, nfcIntentFilters, nfcTechLists);
+//        }
 
 //        Intent intent = getIntent();
 //        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
@@ -79,8 +78,8 @@ public class PayActivity extends Activity {
         super.onPause();
 
         // disable foreground dispatch
-        if (nfcAdapter != null)
-            nfcAdapter.disableForegroundDispatch(this);
+//        if (nfcAdapter != null)
+//            nfcAdapter.disableForegroundDispatch(this);
     }
 
     /**
@@ -88,21 +87,21 @@ public class PayActivity extends Activity {
      */
     @Override
     public void onNewIntent(Intent intent) {
-        String action = intent.getAction();
-        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-
-        String s = action + "\n\n" + tag.toString();
-        Log.d(TAG, "tag... " + s);
-
-        // parse through all NDEF messages and their records and pick text type only
-        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        if (data != null) {
-            NdefMessage message = (NdefMessage) data[0];
-            String amount = new String(message.getRecords()[0].getPayload());
-            Log.d(TAG, amount);
-
-            payAmountText.setText("$" + amount);
-        }
+//        String action = intent.getAction();
+//        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+//
+//        String s = action + "\n\n" + tag.toString();
+//        Log.d(TAG, "tag... " + s);
+//
+//        // parse through all NDEF messages and their records and pick text type only
+//        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+//        if (data != null) {
+//            NdefMessage message = (NdefMessage) data[0];
+//            String amount = new String(message.getRecords()[0].getPayload());
+//            Log.d(TAG, amount);
+//
+//            payAmountText.setText("$" + amount);
+//        }
     }
 
     /**
@@ -144,6 +143,10 @@ public class PayActivity extends Activity {
         acceptText.setTypeface(typeface, Typeface.BOLD);
         rejectText.setTypeface(typeface, Typeface.BOLD);
 
+
+    }
+
+    private void initActionBar() {
         // Set up action bar.
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.
@@ -159,6 +162,23 @@ public class PayActivity extends Activity {
         TextView actionBarTitle = (TextView) (findViewById(titleId));
         actionBarTitle.setTextColor(getResources().getColor(R.color.white));
         actionBarTitle.setTypeface(typeface);
+    }
+
+    private void initPaymentDetails() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String amount = bundle.getString("EXTRA");
+            payAmountText.setText(amount + "$");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
     }
 
 }
