@@ -52,9 +52,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
-                        android:text="25.50$"
+                        android:text="$"
                         android:textColor="#FFF"
-                        android:textSize="50sp"></TextView>
+                        android:textSize="50sp">
+                    </TextView>
 
                 </RelativeLayout>
 
