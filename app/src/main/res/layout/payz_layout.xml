@@ -23,7 +23,7 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/payment_icon"
+                android:background="@drawable/nfc_payment"
                 android:visibility="visible">
 
                 <TextView

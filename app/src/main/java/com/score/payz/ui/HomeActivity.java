@@ -81,7 +81,7 @@ public class HomeActivity extends FragmentActivity {
         initDrawer();
         initDrawerUser();
         initDrawerList();
-        loadSensors();
+        loadPayz();
     }
 
     /**
@@ -196,7 +196,6 @@ public class HomeActivity extends FragmentActivity {
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerContainer = (RelativeLayout) findViewById(R.id.drawer_container);
@@ -210,7 +209,7 @@ public class HomeActivity extends FragmentActivity {
 
     private void initDrawerUser() {
         userImage = (CircularImageView) findViewById(R.id.contact_image);
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.nfc_1);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.nfc_payment);
         userImage.setImageBitmap(largeIcon);
 
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
@@ -305,31 +304,32 @@ public class HomeActivity extends FragmentActivity {
                 drawerItemList.get(0).setSelected(true);
 
                 // set image
-                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.nfc_1);
+                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.nfc_payment);
                 userImage.setImageBitmap(largeIcon);
 
-                loadSensors();
+                loadPayz();
             } else if (position == 1) {
                 drawerItemList.get(1).setSelected(true);
 
-                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.pay_icon);
+                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.payment_icon);
                 userImage.setImageBitmap(largeIcon);
 
-                loadFriends();
+                loadTopUp();
             } else if (position == 2) {
                 drawerItemList.get(2).setSelected(true);
 
-                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.history_icon);
+                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.history_red);
                 userImage.setImageBitmap(largeIcon);
 
-                loadShare();
+                loadHistory();
             } else if (position == 3) {
                 drawerItemList.get(3).setSelected(true);
 
                 Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.settings_icon);
                 userImage.setImageBitmap(largeIcon);
 
-                loadShare();
+                loadHistory()
+                ;
             }
 
             drawerAdapter.notifyDataSetChanged();
@@ -339,36 +339,36 @@ public class HomeActivity extends FragmentActivity {
     /**
      * Load my sensor list fragment
      */
-    private void loadSensors() {
-        PayzFragment shareFragment = new PayzFragment();
+    private void loadPayz() {
+        PayzFragment payzFragment = new PayzFragment();
 
         // fragment transitions
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main, shareFragment);
+        transaction.replace(R.id.main, payzFragment);
         transaction.commit();
     }
 
-    private void loadFriends() {
-        ShareFragment shareFragment = new ShareFragment();
+    private void loadTopUp() {
+        TopUpFragment topUpFragment = new TopUpFragment();
 
         // fragment transitions
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main, shareFragment);
+        transaction.replace(R.id.main, topUpFragment);
         transaction.commit();
     }
 
-    private void loadShare() {
-        ShareFragment shareFragment = new ShareFragment();
+    private void loadHistory() {
+        HistoryFragment historyFragment = new HistoryFragment();
 
         // fragment transitions
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main, shareFragment);
+        transaction.replace(R.id.main, historyFragment);
         transaction.commit();
     }
 

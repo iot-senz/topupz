@@ -2,6 +2,7 @@ package com.score.payz.ui;
 
 import android.app.ActionBar;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.score.payz.R;
@@ -20,12 +20,9 @@ import com.score.payz.R;
  *
  * @author erangaeb@gmail.com (eranga herath)
  */
-public class ShareFragment extends android.support.v4.app.Fragment {
+public class TopUpFragment extends android.support.v4.app.Fragment {
 
-    private static final String TAG = ShareFragment.class.getName();
-
-    private TextView usernameLabel;
-    private EditText usernameEditText;
+    private static final String TAG = TopUpFragment.class.getName();
 
     // custom font
     private Typeface typeface;
@@ -44,7 +41,7 @@ public class ShareFragment extends android.support.v4.app.Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.share_layout, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.topup_layout, container, false);
 
         return root;
     }
@@ -73,15 +70,13 @@ public class ShareFragment extends android.support.v4.app.Fragment {
     private void initUi() {
         typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/vegur_2.otf");
 
-        usernameLabel = (TextView) getActivity().findViewById(R.id.share_layout_phone_no_label);
-        usernameEditText = (EditText) getActivity().findViewById(R.id.share_layout_phone_no);
-
         // Set up action bar.
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.
         final ActionBar actionBar = getActivity().getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("PayZ");
+        actionBar.setTitle("Top Up");
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xff764295));
 
         // set custom font for
         //  1. action bar title
@@ -90,8 +85,6 @@ public class ShareFragment extends android.support.v4.app.Fragment {
         TextView actionBarTitle = (TextView) (getActivity().findViewById(titleId));
         actionBarTitle.setTextColor(getResources().getColor(R.color.white));
         actionBarTitle.setTypeface(typeface);
-        usernameLabel.setTypeface(typeface);
-        usernameEditText.setTypeface(typeface);
     }
 
     /**
