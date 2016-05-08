@@ -7,12 +7,14 @@ package com.score.payz.pojos;
  */
 public class DrawerItem {
     String name;
+    String color;
     int resourceId;
     int selectedResourceId;
     boolean isSelected;
 
-    public DrawerItem(String name, int resourceId, int selectedResourceId, boolean isSelected) {
+    public DrawerItem(String name, String color, int resourceId, int selectedResourceId, boolean isSelected) {
         this.name = name;
+        this.color = color;
         this.resourceId = resourceId;
         this.selectedResourceId = selectedResourceId;
         this.isSelected = isSelected;
@@ -24,6 +26,14 @@ public class DrawerItem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public int getResourceId() {

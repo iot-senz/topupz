@@ -109,7 +109,7 @@ public class DrawerAdapter extends BaseAdapter {
 
         if (item.isSelected()) {
             holder.imageView.setImageResource(item.getSelectedResourceId());
-            holder.name.setTextColor(Color.parseColor("#5f82c3"));
+            holder.name.setTextColor(Color.parseColor(item.getColor()));
             holder.name.setTypeface(face, Typeface.BOLD);
         } else {
             holder.imageView.setImageResource(item.getResourceId());

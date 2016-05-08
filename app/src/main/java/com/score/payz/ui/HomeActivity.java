@@ -208,7 +208,7 @@ public class HomeActivity extends FragmentActivity {
 
     private void initDrawerUser() {
         userImage = (CircularImageView) findViewById(R.id.contact_image);
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.nfc_payment);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.wireless_app1);
         userImage.setImageBitmap(largeIcon);
 
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
@@ -224,10 +224,10 @@ public class HomeActivity extends FragmentActivity {
         // initialize drawer content
         // need to determine selected item according to the currently selected sensor type
         drawerItemList = new ArrayList();
-        drawerItemList.add(new DrawerItem("$ PayZ", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, true));
-        drawerItemList.add(new DrawerItem("$ Top Up", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, false));
-        drawerItemList.add(new DrawerItem("$ History", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, false));
-        drawerItemList.add(new DrawerItem("$ Settings", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, false));
+        drawerItemList.add(new DrawerItem("$ PayZ", "#5f82c3", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, true));
+        drawerItemList.add(new DrawerItem("$ Top Up", "#764295", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, false));
+        drawerItemList.add(new DrawerItem("$ History", "#d26c6c", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, false));
+        drawerItemList.add(new DrawerItem("$ Settings", "#5f82c3", R.drawable.drawer_list_row_selector, R.drawable.drawer_list_row_selector, false));
 
         drawerAdapter = new DrawerAdapter(HomeActivity.this, drawerItemList);
         drawerListView = (ListView) findViewById(R.id.drawer);
@@ -303,7 +303,7 @@ public class HomeActivity extends FragmentActivity {
                 drawerItemList.get(0).setSelected(true);
 
                 // set image
-                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.nfc_payment);
+                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.wireless_app1);
                 userImage.setImageBitmap(largeIcon);
 
                 loadPayz();
