@@ -56,7 +56,10 @@ public class PayActivity extends Activity {
             Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
 
             NdefMessage message = (NdefMessage) rawMessages[0];
-            Log.d(TAG, new String(message.getRecords()[0].getPayload()));
+            String amount = new String(message.getRecords()[0].getPayload());
+            Log.d(TAG, amount);
+
+            payAmountText.setText("$" + amount);
         }
     }
 
