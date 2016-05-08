@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -26,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.score.payz.R;
@@ -75,6 +77,7 @@ public class HomeActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_layout);
 
+        initNfc();
         initDrawer();
         initDrawerUser();
         initDrawerList();
@@ -129,6 +132,7 @@ public class HomeActivity extends FragmentActivity {
             mapIntent.putExtra("EXTRA", amount);
             startActivity(mapIntent);
             overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
+
         }
     }
 
@@ -157,6 +161,32 @@ public class HomeActivity extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Initialize NFC components
+     */
+    private void initNfc() {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
+        } else {
+            // create an intent with tag data and deliver to this activity
+            nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+            // set an intent filter for all MIME data
+            IntentFilter nfcDiscoveredIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            try {
+                nfcDiscoveredIntentFilter.addDataType("text/plain");
+                nfcIntentFilters = new IntentFilter[]{nfcDiscoveredIntentFilter};
+            } catch (Exception e) {
+                Log.e("TagDispatch", e.toString());
+            }
+
+            // tech list
+            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
+        }
     }
 
     /**
