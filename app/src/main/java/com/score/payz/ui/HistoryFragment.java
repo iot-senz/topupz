@@ -5,14 +5,15 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.score.payz.R;
+import com.score.payz.pojos.History;
+
+import java.util.ArrayList;
 
 /**
  * Activity class for sharing
@@ -26,6 +27,9 @@ public class HistoryFragment extends android.support.v4.app.Fragment {
 
     // custom font
     private Typeface typeface;
+
+    private ListView historyListView;
+    private HistoryListAdapter historyListAdapter;
 
     /**
      * {@inheritDoc}
@@ -41,7 +45,7 @@ public class HistoryFragment extends android.support.v4.app.Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.topup_layout, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.history_list_layout, container, false);
 
         return root;
     }
@@ -54,6 +58,7 @@ public class HistoryFragment extends android.support.v4.app.Fragment {
         super.onActivityCreated(savedInstanceState);
 
         initUi();
+        initFriendListView();
     }
 
     /**
@@ -89,24 +94,21 @@ public class HistoryFragment extends android.support.v4.app.Fragment {
     }
 
     /**
-     * {@inheritDoc}
+     * Initialize friend list view
      */
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.share_menu, menu);
-    }
+    private void initFriendListView() {
+        historyListView = (ListView) getActivity().findViewById(R.id.list_view);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_share_done:
-                return true;
-        }
+        // pop up temporary list
+        ArrayList<History> historyList = new ArrayList<>();
+        historyList.add(new History("Lunch @cafe 1", "10.4$"));
+        historyList.add(new History("Breakfast @Mac", "15$"));
+        historyList.add(new History("Starbug", "5.50$"));
+        historyList.add(new History("Dinner @cafe2", "15.10$"));
+        historyList.add(new History("Coffee", "2.50$"));
 
-        return super.onOptionsItemSelected(item);
+        historyListAdapter = new HistoryListAdapter(this, historyList);
+        historyListView.setAdapter(historyListAdapter);
     }
 
 }

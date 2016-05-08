@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:background="#fff"
+    android:layout_height="80dp">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <RelativeLayout
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_margin="15dp"
+            android:id="@+id/history_list_row_layout_user_icon"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/circle_shape_red"
+            android:layout_centerVertical="true">
+            <TextView
+                android:id="@+id/icon_text"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="#ffffff"
+                android:text="#"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_toRightOf="@+id/history_list_row_layout_user_icon"
+            android:layout_height="fill_parent">
+            <TextView
+                android:id="@+id/history_list_row_layout_name"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="1dp"
+                android:textSize="20dp"
+                android:text="Lucch @cafe1"
+                android:textColor="#d26c6c">
+            </TextView>
+
+            <TextView
+                android:id="@+id/history_list_row_layout_amount"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_below="@+id/history_list_row_layout_name"
+                android:layout_height="30dp"
+                android:layout_marginLeft="1dp"
+                android:textSize="15dp"
+                android:text="25.30$"
+                android:textColor="#4a4a4a">
+            </TextView>
+
+        </RelativeLayout>
+
+
+        <!-- divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#DADADC" >
+        </View>
+    </RelativeLayout>
+
+</LinearLayout>
