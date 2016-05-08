@@ -50,6 +50,7 @@ public class PayActivity extends Activity {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -73,6 +74,7 @@ public class PayActivity extends Activity {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void onPause() {
         super.onPause();
 
@@ -81,6 +83,9 @@ public class PayActivity extends Activity {
             nfcAdapter.disableForegroundDispatch(this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onNewIntent(Intent intent) {
         String action = intent.getAction();
