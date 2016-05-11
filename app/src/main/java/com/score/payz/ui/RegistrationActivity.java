@@ -180,7 +180,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
                 intent.setClassName("com.score.payz", "com.score.payz.services.RemoteSenzService");
                 bindService(intent, senzServiceConnection, Context.BIND_AUTO_CREATE);
             } else {
-                // start to send senz to server form here
+                // sta  rt to send senz to server form here
                 isResponseReceived = false;
                 senzCountDownTimer.start();
             }

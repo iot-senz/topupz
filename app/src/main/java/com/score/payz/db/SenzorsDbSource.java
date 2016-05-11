@@ -9,6 +9,8 @@ import android.util.Log;
 //import com.score.payz.pojos.Summary;
 //import com.score.payz.pojos.Transaction;
 
+import com.score.payz.pojos.Pay;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,23 +27,21 @@ public class SenzorsDbSource {
         Log.d(TAG, "Init: db source");
         this.context = context;
     }
-/*
-    public void createTransaction(Transaction transaction) {
+
+    public void createPay(Pay pay) {
         SQLiteDatabase db = SenzorsDbHelper.getInstance(context).getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(SenzorsDbContract.Transaction.COLUMN_NAME_clientAccountNo, transaction.getClientAccountNo());
-        values.put(SenzorsDbContract.Transaction.COLUMN_NAME_CLIENTNAME, transaction.getClientName());
-        values.put(SenzorsDbContract.Transaction.COLUMN_NAME_previousBalance, transaction.getPreviousBalance());
-        values.put(SenzorsDbContract.Transaction.COLUMN_NAME_transactionAmount, transaction.getTransactionAmount());
-        values.put(SenzorsDbContract.Transaction.COLUMN_NAME_transactionTime, transaction.getTransactionTime());
-        values.put(SenzorsDbContract.Transaction.COLUMN_NAME_transactionType, transaction.getTransactionType());
-        values.put(SenzorsDbContract.Transaction.COLUMN_NAME_clientNIC, transaction.getClientNic());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_shopNo, pay.getShopNo());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_shopName, pay.getShopName());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_invoiceNumber, pay.getInvoiceNumber());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_payAmount, pay.getPayAmount());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_payTime, pay.getPayTime());
 
-        long id = db.insert(SenzorsDbContract.Transaction.TABLE_NAME, null, values);
+        long id = db.insert(SenzorsDbContract.Pay.TABLE_NAME, null, values);
         db.close();
 
     }
-*/
+
     /*public ArrayList<Transaction> getAllTransactions() {
         ArrayList<Transaction> sensorList = new ArrayList();
 

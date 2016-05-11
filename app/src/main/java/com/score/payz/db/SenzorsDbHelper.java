@@ -23,16 +23,13 @@ public class SenzorsDbHelper extends SQLiteOpenHelper {
 
 
     private static final String SQL_CREATE_TRANSACTION =
-            "CREATE TABLE IF NOT EXISTS " + SenzorsDbContract.Transaction.TABLE_NAME + " (" +
-                    SenzorsDbContract.Transaction._ID + " " + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
-                    SenzorsDbContract.Transaction.COLUMN_NAME_clientAccountNo + " " + NUMBER_TYPE + " NOT NULL" + ", " +
-                    SenzorsDbContract.Transaction.COLUMN_NAME_CLIENTNAME + " " + TEXT_TYPE + ", " +
-                    SenzorsDbContract.Transaction.COLUMN_NAME_previousBalance + " " + NUMBER_TYPE + ", " +
-                    SenzorsDbContract.Transaction.COLUMN_NAME_transactionAmount + " " + NUMBER_TYPE + " NOT NULL" + ", " +
-                    SenzorsDbContract.Transaction.COLUMN_NAME_transactionTime + " " + NUMBER_TYPE + " NOT NULL" + ", " +
-                    SenzorsDbContract.Transaction.COLUMN_NAME_transactionType + " " + TEXT_TYPE + "," +
-                    SenzorsDbContract.Transaction.COLUMN_NAME_clientNIC + " " + TEXT_TYPE +
-                    ")";
+            "CREATE TABLE IF NOT EXISTS " + SenzorsDbContract.Pay.TABLE_NAME + " (" +
+                    SenzorsDbContract.Pay._ID + " " + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
+                    SenzorsDbContract.Pay.COLUMN_NAME_shopNo + " " + NUMBER_TYPE + " NOT NULL" + ", " +
+                    SenzorsDbContract.Pay.COLUMN_NAME_shopName + " " + TEXT_TYPE + ", " +
+                    SenzorsDbContract.Pay.COLUMN_NAME_invoiceNumber + " " + NUMBER_TYPE + ", " +
+                    SenzorsDbContract.Pay.COLUMN_NAME_payAmount + " " + NUMBER_TYPE + " NOT NULL" + ", " +
+                    SenzorsDbContract.Pay.COLUMN_NAME_payTime + " " + NUMBER_TYPE + " NOT NULL)";
 
     public SenzorsDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
