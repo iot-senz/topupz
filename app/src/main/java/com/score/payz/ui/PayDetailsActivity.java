@@ -72,7 +72,7 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
         help.setOnClickListener(PayDetailsActivity.this);
         print.setOnClickListener(PayDetailsActivity.this);
 
-        this.pay = getIntent().getParcelableExtra("transaction");
+        this.pay = getIntent().getParcelableExtra("pay");
 
         // populate list only have transaction
         if (pay != null) {
@@ -80,7 +80,7 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
             attributesList = new ArrayList<Attribute>();
             //attributesList.add(new Attribute("Client Name", transaction.getClientName()));
             //attributesList.add(new Attribute("Client NIC", transaction.getClientNic()));
-            attributesList.add(new Attribute("Account No", pay.getShopNo()));
+            attributesList.add(new Attribute("Shop No", pay.getShopNo()));
             //attributesList.add(new Attribute("Transaction Type", transaction.getTransactionType()));
             attributesList.add(new Attribute("Amount", Integer.toString(pay.getPayAmount())));
             attributesList.add(new Attribute("Time", pay.getPayTime()));

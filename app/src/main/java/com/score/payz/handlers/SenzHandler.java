@@ -85,7 +85,7 @@ public class SenzHandler {
 
     private void handleDataSenz(Senz senz) {
         // we broadcast data senz
-        Intent intent = new Intent("com.wasn.bankz.DATA_SENZ");
+        Intent intent = new Intent("com.score.payz.DATA_SENZ");
         intent.putExtra("SENZ", senz);
         context.sendBroadcast(intent);
     }

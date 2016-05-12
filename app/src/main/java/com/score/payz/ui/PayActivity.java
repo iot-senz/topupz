@@ -221,9 +221,9 @@ public class PayActivity extends Activity {
 
     private Senz getPutSenz() {
         HashMap<String, String> senzAttributes = new HashMap<>();
-        senzAttributes.put("acc", payAmountText.getText().toString().trim());
-        //senzAttributes.put("amnt", amountEditText.getText().toString().trim());
-        //senzAttributes.put("time", ((Long) (System.currentTimeMillis() / 1000)).toString());
+        senzAttributes.put("shopno", payAmountText.getText().toString().trim());
+        senzAttributes.put("amnt", "S001" /*amountEditText.getText().toString().trim()*/);
+        senzAttributes.put("time", ((Long) (System.currentTimeMillis() / 1000)).toString());
 
         // new senz
         String id = "_ID";
@@ -272,7 +272,7 @@ public class PayActivity extends Activity {
 
             // display message dialog that we couldn't reach the user
             if (!isResponseReceived) {
-                String message = "Seems we couldn't complete the transaction at this moment";
+                String message = "Seems we couldn't complete the payment at this moment";
                 displayMessageDialog("#PUT Fail", message);
             }
         }
@@ -296,7 +296,7 @@ public class PayActivity extends Activity {
     private void handleMessage(Intent intent) {
         String action = intent.getAction();
 
-        if (action.equals("com.wasn.bankz.DATA_SENZ")) {
+        if (action.equals("com.score.payz.DATA_SENZ")) {
             Senz senz = intent.getExtras().getParcelable("SENZ");
 
             if (senz.getAttributes().containsKey("msg")) {
@@ -307,7 +307,7 @@ public class PayActivity extends Activity {
 
                 String msg = senz.getAttributes().get("msg");
                 if (msg != null && msg.equalsIgnoreCase("PUTDONE")) {
-                    Toast.makeText(this, "Transaction successful", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
 
                     // save transaction in db
                     if (pay != null)
@@ -316,7 +316,7 @@ public class PayActivity extends Activity {
                     // navigate
                     navigatePayDetails(pay);
                 } else {
-                    String informationMessage = "Failed to complete the transaction";
+                    String informationMessage = "Failed to complete the payment";
                     displayMessageDialog("PUT fail", informationMessage);
                 }
             }

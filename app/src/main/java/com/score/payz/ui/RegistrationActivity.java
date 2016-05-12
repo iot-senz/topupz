@@ -95,7 +95,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
         senzCountDownTimer = new SenzCountDownTimer(16000, 5000);
 
         initUi();
-        registerReceiver(senzMessageReceiver, new IntentFilter("com.wasn.bankz.DATA_SENZ"));
+        registerReceiver(senzMessageReceiver, new IntentFilter("com.score.payz.DATA_SENZ"));
     }
 
     /**
@@ -239,9 +239,9 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
 
             // display message dialog that we couldn't reach the user
             if (!isResponseReceived) {
-                //String message = "<font color=#000000>Seems we couldn't reach the senz service at this moment</font>";
-                //displayInformationMessageDialog("#Registration Fail", message);
-                navigateToHome();
+                String message = "<font color=#000000>Seems we couldn't reach the senz service at this moment</font>";
+                displayInformationMessageDialog("#Registration Fail", message);
+                //navigateToHome();
             }
         }
     }
