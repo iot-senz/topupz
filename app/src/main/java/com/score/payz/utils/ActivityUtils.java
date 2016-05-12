@@ -77,15 +77,15 @@ public class ActivityUtils {
         return true;
     }
 
-    public static boolean isValidTransactionFields(String account, int amount) throws InvalidInputFieldsException, InvalidAccountException {
+    public static boolean isValidPayFields(String account, double amount) throws InvalidInputFieldsException, InvalidAccountException {
         if (account == null || account.isEmpty() || amount == 0) {
             throw new InvalidInputFieldsException();
         }
-
+        /*
         if (account.length()!=12) {
             throw new InvalidAccountException();
         }
-
+        */
         return true;
     }
 

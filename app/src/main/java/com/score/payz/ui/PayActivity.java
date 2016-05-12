@@ -5,25 +5,30 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.score.payz.R;
+import com.score.payz.utils.PayUtils;
 import com.score.senz.ISenzService;
 import com.score.senzc.enums.SenzTypeEnum;
 import com.score.senzc.pojos.Senz;
@@ -41,7 +46,7 @@ import com.score.senzc.pojos.User;
 import java.util.HashMap;
 
 
-public class PayActivity extends Activity {
+public class PayActivity extends Activity implements View.OnClickListener{
 
     private static final String TAG = PayActivity.class.getName();
 
@@ -60,6 +65,11 @@ public class PayActivity extends Activity {
     private TextView acceptText;
     private TextView rejectText;
 
+    // header
+    private RelativeLayout cancel;
+    private RelativeLayout accept;
+    private TextView headerText;
+
     // use to track registration timeout
     private SenzCountDownTimer senzCountDownTimer;
     private boolean isResponseReceived;
@@ -68,6 +78,22 @@ public class PayActivity extends Activity {
     private ISenzService senzService;
     private boolean isServiceBound;
 
+    // service connection
+    private ServiceConnection senzServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d("TAG", "Connected with senz service");
+            isServiceBound = true;
+            senzService = ISenzService.Stub.asInterface(service);
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            Log.d("TAG", "Disconnected from senz service");
+
+            senzService = null;
+            isServiceBound = false;
+        }
+    };
+
     // current pay
     private Pay pay;
 
@@ -75,11 +101,35 @@ public class PayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pay_layout);
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
         //initNfc();
         initUi();
         initActionBar();
         initPaymentDetails();
+
+        // service
+        senzService = null;
+        isServiceBound = false;
+
+        // register broadcast receiver
+        registerReceiver(senzMessageReceiver, new IntentFilter("com.score.payz.DATA_SENZ"));
+
+        // bind with senz service
+        // bind to service from here as well
+        if (!isServiceBound) {
+            Intent intent = new Intent();
+            intent.setClassName("com.score.payz", "com.score.payz.services.RemoteSenzService");
+            bindService(intent, senzServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(senzServiceConnection);
+        unregisterReceiver(senzMessageReceiver);
     }
 
     /**
@@ -174,6 +224,12 @@ public class PayActivity extends Activity {
         acceptText = (TextView) findViewById(R.id.accept_text);
         rejectText = (TextView) findViewById(R.id.reject_text);
 
+        cancel = (RelativeLayout) findViewById(R.id.sign_in_button_panel);
+        accept = (RelativeLayout) findViewById(R.id.accept_button);
+
+        cancel.setOnClickListener(PayActivity.this);
+        accept.setOnClickListener(PayActivity.this);
+
         clickToPay.setTypeface(typeface, Typeface.NORMAL);
         payAmountText.setTypeface(typeface, Typeface.NORMAL);
         acceptText.setTypeface(typeface, Typeface.BOLD);
@@ -219,17 +275,60 @@ public class PayActivity extends Activity {
 
 //-------------------------------------------------
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onClick(View view) {
+        if (view == cancel) {
+            // cancel to main activity
+            PayActivity.this.finish();
+        } else if (view == accept) {
+            onClickPut();
+        }
+    }
+
+
+    private void onClickPut() {
+        ActivityUtils.hideSoftKeyboard(this);
+
+        try {
+            String account = "shop01";//accountEditText.getText().toString().trim();
+            double amount = 100;//Integer.parseInt(amountEditText.getText().toString().trim());
+            ActivityUtils.isValidPayFields(account, amount);
+
+            // initialize transaction
+            pay = new Pay(1, "shop abc", "shop01", "inv0001", amount, PayUtils.getCurrentTime().toString());
+
+            //new SenzorsDbSource(TransactionActivity.this).createTransaction(transaction);
+            //navigateTransactionDetails(transaction);
+            if (NetworkUtil.isAvailableNetwork(this)) {
+                displayInformationMessageDialog("Are you sure you want to do the transaction " + /* #Account " + /*pay.getClientAccountNo() +*/ " #Amount " + pay.getPayAmount());
+            } else {
+                displayMessageDialog("#ERROR", "No network connection");
+            }
+        } catch (InvalidInputFieldsException | NumberFormatException e) {
+            e.printStackTrace();
+
+            displayMessageDialog("#ERROR", "Invalid account no/amount");
+        } catch (InvalidAccountException e) {
+            e.printStackTrace();
+
+            displayMessageDialog("#ERROR", "Account no should be 12 character length");
+        }
+    }
+
     private Senz getPutSenz() {
         HashMap<String, String> senzAttributes = new HashMap<>();
-        senzAttributes.put("shopno", payAmountText.getText().toString().trim());
-        senzAttributes.put("amnt", "S001" /*amountEditText.getText().toString().trim()*/);
+        senzAttributes.put("amnt", "100");//payAmountText.getText().toString().trim());
+        senzAttributes.put("acc", "shop01" /*amountEditText.getText().toString().trim()*/);
         senzAttributes.put("time", ((Long) (System.currentTimeMillis() / 1000)).toString());
 
         // new senz
         String id = "_ID";
         String signature = "_SIGNATURE";
         SenzTypeEnum senzType = SenzTypeEnum.PUT;
-        User receiver = new User("", "sdbltrans");
+        User receiver = new User("", "payzbankz");
 
         return new Senz(id, signature, senzType, null, receiver, senzAttributes);
     }

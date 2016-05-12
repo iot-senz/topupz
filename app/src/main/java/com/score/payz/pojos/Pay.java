@@ -13,14 +13,14 @@ public class Pay implements Parcelable {
     String shopName;
     String shopNo;
     String invoiceNumber;
-    int payAmount;
+    double payAmount;
     String payTime;
 
     public Pay(int id,
                        String shopName,
                        String shopNo,
                        String invoiceNumber,
-                       int payAmount,
+                       double payAmount,
                        String payTime) {
         this.id = id;
         this.shopName = shopName;
@@ -35,7 +35,7 @@ public class Pay implements Parcelable {
         shopName = in.readString();
         shopNo = in.readString();
         invoiceNumber = in.readString();
-        payAmount = in.readInt();
+        payAmount = in.readDouble();
         payTime = in.readString();
     }
 
@@ -51,7 +51,6 @@ public class Pay implements Parcelable {
         }
     };
 
-
     public int getId() {
         return id;
     }
@@ -64,8 +63,8 @@ public class Pay implements Parcelable {
         return shopName;
     }
 
-    public void setShopName(String clientName) {
-        this.shopName = clientName;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public String getShopNo() {
@@ -84,11 +83,11 @@ public class Pay implements Parcelable {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public int getPayAmount() {
+    public double getPayAmount() {
         return payAmount;
     }
 
-    public void setPayAmount(int payAmount) {
+    public void setPayAmount(double payAmount) {
         this.payAmount = payAmount;
     }
 
@@ -111,7 +110,7 @@ public class Pay implements Parcelable {
         dest.writeString(shopName);
         dest.writeString(shopNo);
         dest.writeString(invoiceNumber);
-        dest.writeInt(payAmount);
+        dest.writeDouble(payAmount);
         dest.writeString(payTime);
     }
 }
