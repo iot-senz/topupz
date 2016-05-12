@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.score.payz">
+    package="com.score.shopz">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.SplashActivity"
+            android:name="com.score.shopz.ui.SplashActivity"
             android:configChanges="orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.RegistrationActivity"
+            android:name="com.score.shopz.ui.RegistrationActivity"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation"
             android:launchMode="singleTask"
@@ -35,7 +35,7 @@
             android:theme="@android:style/Theme.Holo.NoActionBar">
         </activity>
         <activity
-            android:name=".ui.HomeActivity"
+            android:name="com.score.shopz.ui.HomeActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:launchMode="singleTask"
@@ -50,36 +50,36 @@
 
         </activity>
         <activity
-            android:name=".ui.PayActivity"
+            android:name="com.score.shopz.ui.PayActivity"
             android:label="@string/title_activity_pay"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar">
         </activity>
         <service
-            android:name="com.score.payz.services.RemoteSenzService"
+            android:name="com.score.shopz.services.RemoteSenzService"
             android:enabled="true"
             android:process=":remote">
             <intent-filter>
-                <action android:name="com.score.payz.services.RemoteSenzService" />
+                <action android:name="com.score.shopz.services.RemoteSenzService" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".receivers.BootCompleteReceiver">
+        <receiver android:name="com.score.shopz.receivers.BootCompleteReceiver">
             <intent-filter>
                 <action android:name="com.score.senz.senzservice" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.SenzReceiver">
+        <receiver android:name="com.score.shopz.receivers.SenzReceiver">
             <intent-filter>
                 <action android:name="com.score.senz.NEW_SENZ" />
             </intent-filter>
         </receiver>
 
         <receiver
-            android:name=".receivers.AlarmReceiver"
+            android:name="com.score.shopz.receivers.AlarmReceiver"
             android:process=":remote">
         </receiver>
 
