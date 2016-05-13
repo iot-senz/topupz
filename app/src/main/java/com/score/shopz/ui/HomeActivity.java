@@ -127,7 +127,7 @@ public class HomeActivity extends FragmentActivity {
             Log.d(TAG, "----------------- " + amount);
 
             // launch pay activity
-            Intent mapIntent = new Intent(this, PayActivity.class);
+            Intent mapIntent = new Intent(this, BillActivity.class);
             mapIntent.putExtra("EXTRA", amount);
             startActivity(mapIntent);
             overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
@@ -339,7 +339,7 @@ public class HomeActivity extends FragmentActivity {
      * Load my sensor list fragment
      */
     private void loadPayz() {
-        PayzFragment payzFragment = new PayzFragment();
+        BillzFragment payzFragment = new BillzFragment();
 
         // fragment transitions
         // Replace whatever is in the fragment_container view with this fragment,

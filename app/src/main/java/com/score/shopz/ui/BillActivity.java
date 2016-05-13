@@ -12,7 +12,10 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -23,12 +26,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.score.shopz.R;
-import com.score.shopz.utils.PayUtils;
+import com.score.shopz.exceptions.NoUserException;
+import com.score.shopz.pojos.Bill;
+import com.score.shopz.utils.BillUtils;
 import com.score.senz.ISenzService;
 import com.score.senzc.enums.SenzTypeEnum;
 import com.score.senzc.pojos.Senz;
@@ -37,31 +43,36 @@ import com.score.shopz.db.SenzorsDbSource;
 import com.score.shopz.exceptions.InvalidAccountException;
 import com.score.shopz.exceptions.InvalidInputFieldsException;
 //import com.wasn.pojos.BalanceQuery;
-import com.score.shopz.pojos.Pay;
 import com.score.shopz.utils.ActivityUtils;
 import com.score.shopz.utils.NetworkUtil;
 import com.score.senzc.pojos.User;
+import com.score.shopz.utils.PreferenceUtils;
 //import com.wasn.utils.TransactionUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
 
-public class PayActivity extends Activity implements View.OnClickListener{
+public class BillActivity extends Activity implements View.OnClickListener, NfcAdapter.CreateNdefMessageCallback{
 
-    private static final String TAG = PayActivity.class.getName();
+    private static final String TAG = BillActivity.class.getName();
 
     // deals with NFC
     private NfcAdapter nfcAdapter;
-    private PendingIntent nfcPendingIntent;
-    private IntentFilter[] nfcIntentFilters;
-    private String[][] nfcTechLists;
+//    private PendingIntent nfcPendingIntent;
+//    private IntentFilter[] nfcIntentFilters;
+//    private String[][] nfcTechLists;
 
     // custom type face
     private Typeface typeface;
 
     // UI components
-    private TextView clickToPay;
-    private TextView payAmountText;
+    private TextView billNoText;
+    private TextView billAmountText;
+    private EditText billNoEditText;
+    private EditText billAmountEditText;
     private TextView acceptText;
     private TextView rejectText;
 
@@ -78,33 +89,27 @@ public class PayActivity extends Activity implements View.OnClickListener{
     private ISenzService senzService;
     private boolean isServiceBound;
 
-    // service connection
-    private ServiceConnection senzServiceConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.d("TAG", "Connected with senz service");
-            isServiceBound = true;
-            senzService = ISenzService.Stub.asInterface(service);
-        }
+    //for nfc
+    private EditText nfcMessage;
 
-        public void onServiceDisconnected(ComponentName className) {
-            Log.d("TAG", "Disconnected from senz service");
-
-            senzService = null;
-            isServiceBound = false;
-        }
-    };
-
-    // current pay
-    private Pay pay;
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.bill_layout);
+//
+//        initUi();
+//        initNfc();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pay_layout);
+        setContentView(R.layout.bill_layout);
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
         //initNfc();
         initUi();
+        initNfc();
         initActionBar();
         initPaymentDetails();
 
@@ -124,6 +129,79 @@ public class PayActivity extends Activity implements View.OnClickListener{
         }
 
     }
+
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
+        // TODO move to utils
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("acc", PreferenceUtils.getUser(this).getUsername());
+            jsonObject.put("amnt", billAmountEditText.getText().toString().trim());
+            jsonObject.put("billNo", billNoEditText.getText().toString().trim());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NoUserException e) {
+            e.printStackTrace();
+        }
+
+        String message = jsonObject.toString();
+        NdefRecord ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
+        NdefMessage ndefMessage = new NdefMessage(ndefRecord);
+
+        return ndefMessage;
+    }
+
+
+    /**
+     * Initialize UI components
+     */
+    private void initUi() {
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
+
+        billNoText = (TextView) findViewById(R.id.bill_no);
+        billAmountText = (TextView) findViewById(R.id.bill_amount);
+
+        billNoEditText = (EditText)findViewById(R.id.bill_layout_number_text);
+        billAmountEditText = (EditText) findViewById(R.id.bill_layout_amount_text);
+
+        billNoText.setTypeface(typeface, Typeface.NORMAL);
+        billAmountText.setTypeface(typeface, Typeface.NORMAL);
+
+        //inputAmount = (EditText) findViewById(R.id.input_amount);
+    }
+
+    /**
+     * Initialize NFC components
+     */
+    private void initNfc() {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
+        } else {
+            nfcAdapter.setNdefPushMessageCallback(this, this);
+        }
+    }
+
+
+    // service connection
+    private ServiceConnection senzServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d("TAG", "Connected with senz service");
+            isServiceBound = true;
+            senzService = ISenzService.Stub.asInterface(service);
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            Log.d("TAG", "Disconnected from senz service");
+
+            senzService = null;
+            isServiceBound = false;
+        }
+    };
+
+    // current bill
+    private Bill bill;
 
     @Override
     protected void onDestroy() {
@@ -193,50 +271,28 @@ public class PayActivity extends Activity implements View.OnClickListener{
     /**
      * Initialize NFC components
      */
-    private void initNfc() {
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
-        } else {
-            // create an intent with tag data and deliver to this activity
-            nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-
-            // set an intent filter for all MIME data
-            IntentFilter nfcDiscoveredIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-            try {
-                nfcDiscoveredIntentFilter.addDataType("text/plain");
-                nfcIntentFilters = new IntentFilter[]{nfcDiscoveredIntentFilter};
-            } catch (Exception e) {
-                Log.e("TagDispatch", e.toString());
-            }
-
-            // tech list
-            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
-        }
-    }
-
-    private void initUi() {
-        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
-
-        clickToPay = (TextView) findViewById(R.id.click_to_pay);
-        payAmountText = (TextView) findViewById(R.id.pay_amount_text);
-        acceptText = (TextView) findViewById(R.id.accept_text);
-        rejectText = (TextView) findViewById(R.id.reject_text);
-
-        cancel = (RelativeLayout) findViewById(R.id.sign_in_button_panel);
-        accept = (RelativeLayout) findViewById(R.id.accept_button);
-
-        cancel.setOnClickListener(PayActivity.this);
-        accept.setOnClickListener(PayActivity.this);
-
-        clickToPay.setTypeface(typeface, Typeface.NORMAL);
-        payAmountText.setTypeface(typeface, Typeface.NORMAL);
-        acceptText.setTypeface(typeface, Typeface.BOLD);
-        rejectText.setTypeface(typeface, Typeface.BOLD);
-
-
-    }
+//    private void initNfc() {
+//        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+//
+//        if (nfcAdapter == null) {
+//            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
+//        } else {
+//            // create an intent with tag data and deliver to this activity
+//            nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+//
+//            // set an intent filter for all MIME data
+//            IntentFilter nfcDiscoveredIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+//            try {
+//                nfcDiscoveredIntentFilter.addDataType("text/plain");
+//                nfcIntentFilters = new IntentFilter[]{nfcDiscoveredIntentFilter};
+//            } catch (Exception e) {
+//                Log.e("TagDispatch", e.toString());
+//            }
+//
+//            // tech list
+//            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
+//        }
+//    }
 
     private void initActionBar() {
         // Set up action bar.
@@ -244,7 +300,7 @@ public class PayActivity extends Activity implements View.OnClickListener{
         // button will take the user one step up in the application's hierarchy.
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Pay");
+        actionBar.setTitle("Bill");
         getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
 
         // set custom font for
@@ -260,7 +316,7 @@ public class PayActivity extends Activity implements View.OnClickListener{
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String amount = bundle.getString("EXTRA");
-            payAmountText.setText(amount + "$");
+            billAmountText.setText(amount + "$");
         }
     }
 
@@ -282,7 +338,7 @@ public class PayActivity extends Activity implements View.OnClickListener{
     public void onClick(View view) {
         if (view == cancel) {
             // cancel to main activity
-            PayActivity.this.finish();
+            BillActivity.this.finish();
         } else if (view == accept) {
             onClickPut();
         }
@@ -298,12 +354,12 @@ public class PayActivity extends Activity implements View.OnClickListener{
             ActivityUtils.isValidPayFields(account, amount);
 
             // initialize transaction
-            pay = new Pay(1, "shop abc", "shop01", "inv0001", amount, PayUtils.getCurrentTime().toString());
+            bill = new Bill(1, "shop abc", "shop01", "inv0001", amount, BillUtils.getCurrentTime().toString());
 
             //new SenzorsDbSource(TransactionActivity.this).createTransaction(transaction);
             //navigateTransactionDetails(transaction);
             if (NetworkUtil.isAvailableNetwork(this)) {
-                displayInformationMessageDialog("Are you sure you want to do the transaction " + /* #Account " + /*pay.getClientAccountNo() +*/ " #Amount " + pay.getPayAmount());
+                displayInformationMessageDialog("Are you sure you want to do the transaction " + /* #Account " + /*bill.getClientAccountNo() +*/ " #Amount " + bill.getPayAmount());
             } else {
                 displayMessageDialog("#ERROR", "No network connection");
             }
@@ -366,7 +422,7 @@ public class PayActivity extends Activity implements View.OnClickListener{
 
         @Override
         public void onFinish() {
-            ActivityUtils.hideSoftKeyboard(PayActivity.this);
+            ActivityUtils.hideSoftKeyboard(BillActivity.this);
             ActivityUtils.cancelProgressDialog();
 
             // display message dialog that we couldn't reach the user
@@ -409,11 +465,11 @@ public class PayActivity extends Activity implements View.OnClickListener{
                     Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
 
                     // save transaction in db
-                    if (pay != null)
-                        new SenzorsDbSource(PayActivity.this).createPay(pay);
+                    if (bill != null)
+                        new SenzorsDbSource(BillActivity.this).createPay(bill);
 
                     // navigate
-                    navigatePayDetails(pay);
+                    navigatePayDetails(bill);
                 } else {
                     String informationMessage = "Failed to complete the payment";
                     displayMessageDialog("PUT fail", informationMessage);
@@ -496,7 +552,7 @@ public class PayActivity extends Activity implements View.OnClickListener{
                 // do transaction
                 dialog.cancel();
 
-                ActivityUtils.showProgressDialog(PayActivity.this, "Please wait...");
+                ActivityUtils.showProgressDialog(BillActivity.this, "Please wait...");
 
                 // start new timer
                 isResponseReceived = false;
@@ -518,14 +574,14 @@ public class PayActivity extends Activity implements View.OnClickListener{
         dialog.show();
     }
 
-    private void navigatePayDetails(Pay pay) {
+    private void navigatePayDetails(Bill bill) {
         // navigate to transaction details
-        Intent intent = new Intent(PayActivity.this, PayDetailsActivity.class);
-        intent.putExtra("pay", pay);
-        intent.putExtra("ACTIVITY_NAME", PayActivity.class.getName());
+        Intent intent = new Intent(BillActivity.this, BillDetailsActivity.class);
+        intent.putExtra("bill", bill);
+        intent.putExtra("ACTIVITY_NAME", BillActivity.class.getName());
         startActivity(intent);
 
-        PayActivity.this.finish();
+        BillActivity.this.finish();
     }
 
 }

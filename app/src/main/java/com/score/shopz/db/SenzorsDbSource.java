@@ -8,7 +8,7 @@ import android.util.Log;
 //import com.score.payz.pojos.Summary;
 //import com.score.payz.pojos.Transaction;
 
-import com.score.shopz.pojos.Pay;
+import com.score.shopz.pojos.Bill;
 
 /**
  * Created by root on 11/19/15.
@@ -22,14 +22,14 @@ public class SenzorsDbSource {
         this.context = context;
     }
 
-    public void createPay(Pay pay) {
+    public void createPay(Bill bill) {
         SQLiteDatabase db = SenzorsDbHelper.getInstance(context).getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(SenzorsDbContract.Pay.COLUMN_NAME_shopNo, pay.getShopNo());
-        values.put(SenzorsDbContract.Pay.COLUMN_NAME_shopName, pay.getShopName());
-        values.put(SenzorsDbContract.Pay.COLUMN_NAME_invoiceNumber, pay.getInvoiceNumber());
-        values.put(SenzorsDbContract.Pay.COLUMN_NAME_payAmount, pay.getPayAmount());
-        values.put(SenzorsDbContract.Pay.COLUMN_NAME_payTime, pay.getPayTime());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_shopNo, bill.getShopNo());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_shopName, bill.getShopName());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_invoiceNumber, bill.getInvoiceNumber());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_payAmount, bill.getPayAmount());
+        values.put(SenzorsDbContract.Pay.COLUMN_NAME_payTime, bill.getPayTime());
 
         long id = db.insert(SenzorsDbContract.Pay.TABLE_NAME, null, values);
         db.close();

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.score.shopz.R;
 import com.score.shopz.pojos.Attribute;
-import com.score.shopz.pojos.Pay;
+import com.score.shopz.pojos.Bill;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ import java.util.ArrayList;
  *
  * @author erangaeb@gmail.com (eranga bandara)
  */
-public class PayDetailsActivity extends Activity implements View.OnClickListener {
+public class BillDetailsActivity extends Activity implements View.OnClickListener {
 
     // use to populate list
     ListView transactionDetailsListView;
@@ -40,7 +40,7 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
     // display when printing
     public ProgressDialog progressDialog;
 
-    private Pay pay;
+    private Bill bill;
 
     /**
      * {@inheritDoc}
@@ -48,7 +48,7 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pay_details_list_layout);
+        setContentView(R.layout.bill_details_list_layout);
 
         init();
     }
@@ -67,22 +67,22 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
         headerText.setTypeface(face);
         headerText.setTypeface(null, Typeface.BOLD);
 
-        back.setOnClickListener(PayDetailsActivity.this);
-        help.setOnClickListener(PayDetailsActivity.this);
-        print.setOnClickListener(PayDetailsActivity.this);
+        back.setOnClickListener(BillDetailsActivity.this);
+        help.setOnClickListener(BillDetailsActivity.this);
+        print.setOnClickListener(BillDetailsActivity.this);
 
-        this.pay = getIntent().getParcelableExtra("pay");
+        this.bill = getIntent().getParcelableExtra("bill");
 
         // populate list only have transaction
-        if (pay != null) {
+        if (bill != null) {
             // fill attribute list from with transaction details
             attributesList = new ArrayList<Attribute>();
             //attributesList.add(new Attribute("Client Name", transaction.getClientName()));
             //attributesList.add(new Attribute("Client NIC", transaction.getClientNic()));
-            attributesList.add(new Attribute("Shop No", pay.getShopNo()));
+            attributesList.add(new Attribute("Shop No", bill.getShopNo()));
             //attributesList.add(new Attribute("Transaction Type", transaction.getTransactionType()));
-            attributesList.add(new Attribute("Amount", Double.toString(pay.getPayAmount())));
-            attributesList.add(new Attribute("Time", pay.getPayTime()));
+            attributesList.add(new Attribute("Amount", Double.toString(bill.getPayAmount())));
+            attributesList.add(new Attribute("Time", bill.getPayTime()));
 
             // populate list
             transactionDetailsListView = (ListView) findViewById(R.id.transaction_details_list);
@@ -94,7 +94,7 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
             transactionDetailsListView.addHeaderView(headerView);
             transactionDetailsListView.addFooterView(footerView);
 
-            adapter = new AttributeListAdapter(PayDetailsActivity.this, attributesList);
+            adapter = new AttributeListAdapter(BillDetailsActivity.this, attributesList);
             transactionDetailsListView.setAdapter(adapter);
         } else {
             // To-Do display empty view
@@ -107,7 +107,7 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
      * @param message
      */
     public void displayInformationMessageDialog(String message) {
-        final Dialog dialog = new Dialog(PayDetailsActivity.this);
+        final Dialog dialog = new Dialog(BillDetailsActivity.this);
 
         //set layout for dialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -222,16 +222,16 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
 
         if (status.equals("1")) {
             // clear shared objects
-            Toast.makeText(PayDetailsActivity.this, "Transaction saved", Toast.LENGTH_LONG).show();
+            Toast.makeText(BillDetailsActivity.this, "Transaction saved", Toast.LENGTH_LONG).show();
 
             // need to go back to transaction activity
-            PayDetailsActivity.this.finish();
+            BillDetailsActivity.this.finish();
         } else if (status.equals("0")) {
-            Toast.makeText(PayDetailsActivity.this, "Cannot print receipt", Toast.LENGTH_LONG).show();
+            Toast.makeText(BillDetailsActivity.this, "Cannot print receipt", Toast.LENGTH_LONG).show();
         } else if (status.equals("-2")) {
-            Toast.makeText(PayDetailsActivity.this, "Bluetooth not enabled", Toast.LENGTH_LONG).show();
+            Toast.makeText(BillDetailsActivity.this, "Bluetooth not enabled", Toast.LENGTH_LONG).show();
         } else if (status.equals("-3")) {
-            Toast.makeText(PayDetailsActivity.this, "Bluetooth not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(BillDetailsActivity.this, "Bluetooth not available", Toast.LENGTH_LONG).show();
         } else if (status.equals("-5")) {
             // invalid bluetooth address
             displayMessageDialog("Error", "Invalid printer address, Please make sure correct printer address in Settings");
@@ -247,7 +247,7 @@ public class PayDetailsActivity extends Activity implements View.OnClickListener
      */
     public void onClick(View view) {
         if (view == back) {
-            PayDetailsActivity.this.finish();
+            BillDetailsActivity.this.finish();
         } else if (view == print) {
             ;//displayInformationMessageDialog("Do you wnt to print the receipt? make sure bluetooth is ON");
         }

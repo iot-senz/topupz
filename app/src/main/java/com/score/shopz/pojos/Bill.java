@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by chathura on 5/11/16.
  */
-public class Pay implements Parcelable {
+public class Bill implements Parcelable {
 
     int id;
     String shopName;
@@ -15,12 +15,12 @@ public class Pay implements Parcelable {
     double payAmount;
     String payTime;
 
-    public Pay(int id,
-                       String shopName,
-                       String shopNo,
-                       String invoiceNumber,
-                       double payAmount,
-                       String payTime) {
+    public Bill(int id,
+                String shopName,
+                String shopNo,
+                String invoiceNumber,
+                double payAmount,
+                String payTime) {
         this.id = id;
         this.shopName = shopName;
         this.shopNo = shopNo;
@@ -29,7 +29,7 @@ public class Pay implements Parcelable {
         this.payTime = payTime;
     }
 
-    protected Pay(Parcel in) {
+    protected Bill(Parcel in) {
         id = in.readInt();
         shopName = in.readString();
         shopNo = in.readString();
@@ -38,15 +38,15 @@ public class Pay implements Parcelable {
         payTime = in.readString();
     }
 
-    public static final Creator<Pay> CREATOR = new Creator<Pay>() {
+    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
         @Override
-        public Pay createFromParcel(Parcel in) {
-            return new Pay(in);
+        public Bill createFromParcel(Parcel in) {
+            return new Bill(in);
         }
 
         @Override
-        public Pay[] newArray(int size) {
-            return new Pay[size];
+        public Bill[] newArray(int size) {
+            return new Bill[size];
         }
     };
 

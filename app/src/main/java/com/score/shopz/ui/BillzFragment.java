@@ -15,7 +15,7 @@ import com.score.shopz.R;
 /**
  * Created by eranga on 5/7/16.
  */
-public class PayzFragment extends Fragment {
+public class BillzFragment extends Fragment {
 
     private static final String TAG = TopUpFragment.class.getName();
 
@@ -36,7 +36,7 @@ public class PayzFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.payz_layout, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.billz_layout, container, false);
 
         return root;
     }
