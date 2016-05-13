@@ -1,5 +1,6 @@
 package com.score.shopz.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
@@ -81,6 +83,24 @@ public class HomeActivity extends FragmentActivity {
         initDrawerUser();
         initDrawerList();
         loadPayz();
+    }
+
+    private void initActionBar() {
+        // Set up action bar.
+        // Specify that the Home button should show an "Up" caret, indicating that touching the
+        // button will take the user one step up in the application's hierarchy.
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Shopz");
+        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
+
+        // set custom font for
+        //  1. action bar title
+        //  2. other ui texts
+        int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
+        TextView actionBarTitle = (TextView) (findViewById(titleId));
+        actionBarTitle.setTextColor(getResources().getColor(R.color.white));
+        actionBarTitle.setTypeface(typeface);
     }
 
     /**

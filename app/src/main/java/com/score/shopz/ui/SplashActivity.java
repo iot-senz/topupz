@@ -101,7 +101,7 @@ public class SplashActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashActivity.this, BillActivity.class);
+                Intent intent = new Intent(SplashActivity.this, ShopzHomeActivity.class); //BillActivity
                 SplashActivity.this.startActivity(intent);
                 SplashActivity.this.finish();
             }
