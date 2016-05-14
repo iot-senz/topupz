@@ -1,6 +1,7 @@
 package com.score.shopz.utils;
 
 import com.score.shopz.pojos.Bill;
+import com.score.shopz.pojos.TopUp;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +29,20 @@ public class JSONUtils {
         jsonObject.put("amnt", bill.getAmount());
 
         return jsonObject.toString();
+    }
+
+    /**
+     * Create TopUp object by parsing JSON string
+     *
+     * @param jsonString json string
+     * @return TopUp Object
+     */
+    public static TopUp getTopUp(String jsonString) throws JSONException {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        String acc = jsonObject.getString("acc");
+        String amnt = jsonObject.getString("amnt");
+
+        return new TopUp(acc, amnt, getCurrentTime());
     }
 
     /**

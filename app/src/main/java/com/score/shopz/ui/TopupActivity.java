@@ -18,6 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.score.shopz.R;
+import com.score.shopz.pojos.TopUp;
+import com.score.shopz.utils.JSONUtils;
+
+import org.json.JSONException;
 
 /**
  * Created by chathura on 5/13/16.
@@ -80,22 +84,30 @@ public class TopupActivity extends Activity {
         String action = intent.getAction();
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-        String s = action + "\n\n" + tag.toString();
-        Log.d(TAG, "tag... " + s);
+        Log.d(TAG, "New intent action " + action);
+        Log.d(TAG, "New intent tag " + tag.toString());
 
         // parse through all NDEF messages and their records and pick text type only
+        // we only send one NDEF message(as a JSON string)
         Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         if (data != null) {
             NdefMessage message = (NdefMessage) data[0];
-            String amount = new String(message.getRecords()[0].getPayload());
-            Log.d(TAG, "----------------- " + amount);
+            String jsonString = new String(message.getRecords()[0].getPayload());
 
-            // launch pay activity
-            Intent mapIntent = new Intent(this, PayActivity.class);
-            mapIntent.putExtra("EXTRA", amount);
-            startActivity(mapIntent);
-            overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
+            try {
+                // parse JSON and get Pay
+                TopUp payz = JSONUtils.getTopUp(jsonString);
 
+                // launch pay activity
+                Intent mapIntent = new Intent(this, PayActivity.class);
+                mapIntent.putExtra("EXTRA", payz);
+                startActivity(mapIntent);
+                overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+                Toast.makeText(this, "[ERROR] Invalid data", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
