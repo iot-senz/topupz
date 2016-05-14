@@ -19,7 +19,7 @@ import com.score.shopz.R;
 /**
  * Created by chathura on 5/13/16.
  */
-public class ShopzHomeActivity extends Activity implements View.OnClickListener {
+public class HomeActivity extends Activity implements View.OnClickListener {
 
     // activity components
     RelativeLayout billLayout;
@@ -104,9 +104,9 @@ public class ShopzHomeActivity extends Activity implements View.OnClickListener 
         //mbankIcon = (TextView) findViewById(R.id.mbank_icon);
         //mbankIcon.setTypeface(typeface, Typeface.BOLD);
 
-        billLayout.setOnClickListener(ShopzHomeActivity.this);
-        topupLayout.setOnClickListener(ShopzHomeActivity.this);
-        settingsLayout.setOnClickListener(ShopzHomeActivity.this);
+        billLayout.setOnClickListener(HomeActivity.this);
+        topupLayout.setOnClickListener(HomeActivity.this);
+        settingsLayout.setOnClickListener(HomeActivity.this);
 //        logout.setOnClickListener(ShopzHomeActivity.this);
     }
 
@@ -118,15 +118,15 @@ public class ShopzHomeActivity extends Activity implements View.OnClickListener 
     public void onClick(View view) {
         if (view == billLayout) {
             // display bill activity
-            startActivity(new Intent(ShopzHomeActivity.this, BillActivity.class));
+            startActivity(new Intent(HomeActivity.this, BillActivity.class));
             //ShopzHomeActivity.this.finish();
         } else if (view == topupLayout) {
             // display bill list activity
-            startActivity(new Intent(ShopzHomeActivity.this, TopupActivity.class));
+            startActivity(new Intent(HomeActivity.this, TopupActivity.class));
             //ShopzHomeActivity.this.finish();
         } else if (view == settingsLayout) {
             // display settings activity
-            startActivity(new Intent(ShopzHomeActivity.this, BillActivity.class));  //TODO replace Bill Activity with Settings Activity
+            startActivity(new Intent(HomeActivity.this, BillActivity.class));  //TODO replace Bill Activity with Settings Activity
             //ShopzHomeActivity.this.finish();
         }
 //        else if (view == logout) {
@@ -140,7 +140,7 @@ public class ShopzHomeActivity extends Activity implements View.OnClickListener 
      * @param message
      */
     public void displayInformationMessageDialog(String message) {
-        final Dialog dialog = new Dialog(ShopzHomeActivity.this);
+        final Dialog dialog = new Dialog(HomeActivity.this);
 
         //set layout for dialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -167,7 +167,7 @@ public class ShopzHomeActivity extends Activity implements View.OnClickListener 
             public void onClick(View v) {
                 // back to login activity
                 //startActivity(new Intent(MobileBankActivity.this, LoginActivity.class));
-                ShopzHomeActivity.this.finish();
+                HomeActivity.this.finish();
                 dialog.cancel();
             }
         });

@@ -41,6 +41,40 @@
                     android:inputType="number"
                     android:maxLength="12"
                     android:padding="10dp"
+                    android:editable="false"
+                    android:focusableInTouchMode="false"
+                    android:textColor="#4a4a4a"
+                    android:textCursorDrawable="@null"
+                    android:textSize="18dp"></EditText>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/bill_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="25dp"
+                    android:text="Account"
+                    android:textColor="#4a4a4a"
+                    android:textSize="20dp"></TextView>
+
+                <EditText
+                    android:id="@+id/bill_layout_account_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/text_filed_shape"
+                    android:inputType="text"
+                    android:editable="false"
+                    android:focusableInTouchMode="false"
+                    android:maxLength="6"
+                    android:padding="10dp"
                     android:textColor="#4a4a4a"
                     android:textCursorDrawable="@null"
                     android:textSize="18dp"></EditText>
