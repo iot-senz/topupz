@@ -3,10 +3,8 @@ package com.score.shopz.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.nfc.NdefMessage;
@@ -14,13 +12,11 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.score.senz.ISenzService;
 import com.score.shopz.R;
 
 /**
@@ -39,71 +35,16 @@ public class TopupActivity extends Activity {
     private IntentFilter[] nfcIntentFilters;
     private String[][] nfcTechLists;
 
-
-    /*
-    * {@inheritDoc}
-    */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.topup_layout);
-        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
-        initUi();
-        initActionBar();
         initNfc();
-//        initDrawer();
-//        initDrawerUser();
-//        initDrawerList();
-//        loadPayz();
-    }
-
-    private void initUi(){
-        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
-    }
-
-    private void initActionBar() {
-        // Set up action bar.
-        // Specify that the Home button should show an "Up" caret, indicating that touching the
-        // button will take the user one step up in the application's hierarchy.
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Topup");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
-
-        // set custom font for
-        //  1. action bar title
-        //  2. other ui texts
-        int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
-        TextView actionBarTitle = (TextView) (findViewById(titleId));
-        actionBarTitle.setTextColor(getResources().getColor(R.color.white));
-        actionBarTitle.setTypeface(typeface);
-    }
-
-    /**
-     * Initialize NFC components
-     */
-    private void initNfc() {
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
-        } else {
-            // create an intent with tag data and deliver to this activity
-            nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-
-            // set an intent filter for all MIME data
-            IntentFilter nfcDiscoveredIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-            try {
-                nfcDiscoveredIntentFilter.addDataType("text/plain");
-                nfcIntentFilters = new IntentFilter[]{nfcDiscoveredIntentFilter};
-            } catch (Exception e) {
-                Log.e("TagDispatch", e.toString());
-            }
-
-            // tech list
-            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
-        }
+        initActionBar();
     }
 
     /**
@@ -158,5 +99,53 @@ public class TopupActivity extends Activity {
         }
     }
 
+    /**
+     * Initialize action bar
+     */
+    private void initActionBar() {
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
+
+        // Set up action bar.
+        // Specify that the Home button should show an "Up" caret, indicating that touching the
+        // button will take the user one step up in the application's hierarchy.
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Top Up");
+        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
+
+        // set custom font for
+        //  1. action bar title
+        //  2. other ui texts
+        int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
+        TextView actionBarTitle = (TextView) (findViewById(titleId));
+        actionBarTitle.setTextColor(getResources().getColor(R.color.white));
+        actionBarTitle.setTypeface(typeface);
+    }
+
+    /**
+     * Initialize NFC components
+     */
+    private void initNfc() {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
+        } else {
+            // create an intent with tag data and deliver to this activity
+            nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+            // set an intent filter for all MIME data
+            IntentFilter nfcDiscoveredIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            try {
+                nfcDiscoveredIntentFilter.addDataType("text/plain");
+                nfcIntentFilters = new IntentFilter[]{nfcDiscoveredIntentFilter};
+            } catch (Exception e) {
+                Log.e("TagDispatch", e.toString());
+            }
+
+            // tech list
+            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
+        }
+    }
 
 }

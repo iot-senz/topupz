@@ -27,26 +27,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.score.shopz.R;
-import com.score.shopz.db.SenzorsDbSource;
-import com.score.shopz.exceptions.InvalidAccountException;
-import com.score.shopz.exceptions.InvalidInputFieldsException;
-//import com.score.shopz.pojos.;
-import com.score.shopz.utils.ActivityUtils;
-import com.score.shopz.utils.NetworkUtil;
-//import com.score.shopz.utils.PayUtils;
 import com.score.senz.ISenzService;
 import com.score.senzc.enums.SenzTypeEnum;
 import com.score.senzc.pojos.Senz;
 import com.score.senzc.pojos.User;
+import com.score.shopz.R;
+import com.score.shopz.exceptions.InvalidAccountException;
+import com.score.shopz.exceptions.InvalidInputFieldsException;
+import com.score.shopz.utils.ActivityUtils;
+import com.score.shopz.utils.NetworkUtil;
 
 import java.util.HashMap;
+
+//import com.score.shopz.pojos.;
+//import com.score.shopz.utils.PayUtils;
 
 //import com.wasn.pojos.BalanceQuery;
 //import com.wasn.utils.TransactionUtils;
 
 
-public class PayActivity extends Activity implements View.OnClickListener{
+public class PayActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = PayActivity.class.getName();
 

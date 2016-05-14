@@ -2,42 +2,37 @@ package com.score.shopz.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.score.shopz.R;
+import com.score.shopz.pojos.Bill;
 
 /**
  * Created by chathura on 5/13/16.
  */
 public class HomeActivity extends Activity implements View.OnClickListener {
 
-    // activity components
-    RelativeLayout billLayout;
-    RelativeLayout topupLayout;
-    RelativeLayout settingsLayout;
-    //RelativeLayout logout;
-    //TextView logoutText;
-    TextView billText;
-    TextView billIcon;
-    TextView topupText;
-    TextView topupIcon;
-    TextView settingsText;
-    TextView settingsIcon;
-    //TextView mbankIcon;
+    // UI components
+    private RelativeLayout relativeLayoutBill;
+    private RelativeLayout relativeLayoutTopUp;
+    private RelativeLayout relativeLayoutSettings;
+
+    private TextView billText;
+    private TextView topUpText;
+    private TextView settingsText;
+
+    private TextView billIcon;
+    private TextView topUpIcon;
+    private TextView settingsIcon;
 
     // custom type face
     private Typeface typeface;
-
 
     /**
      * {@inheritDoc}
@@ -48,10 +43,43 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.shopz_home_layout);
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
-        init();
+        initUi();
         initActionBar();
     }
 
+    /**
+     * Initialize activity components
+     */
+    public void initUi() {
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
+
+        relativeLayoutBill = (RelativeLayout) findViewById(R.id.bill_layout);
+        relativeLayoutTopUp = (RelativeLayout) findViewById(R.id.topup_layout);
+        relativeLayoutSettings = (RelativeLayout) findViewById(R.id.settings_layout);
+
+        relativeLayoutBill.setOnClickListener(HomeActivity.this);
+        relativeLayoutTopUp.setOnClickListener(HomeActivity.this);
+        relativeLayoutSettings.setOnClickListener(HomeActivity.this);
+
+        billIcon = (TextView) findViewById(R.id.bill_icon);
+        billText = (TextView) findViewById(R.id.bill_text);
+        billIcon.setTypeface(typeface, Typeface.BOLD);
+        billText.setTypeface(typeface, Typeface.BOLD);
+
+        topUpIcon = (TextView) findViewById(R.id.topup_icon);
+        topUpText = (TextView) findViewById(R.id.topup_text);
+        topUpIcon.setTypeface(typeface, Typeface.BOLD);
+        topUpText.setTypeface(typeface, Typeface.BOLD);
+
+        settingsIcon = (TextView) findViewById(R.id.settings_icon);
+        settingsText = (TextView) findViewById(R.id.settings_text);
+        settingsIcon.setTypeface(typeface, Typeface.BOLD);
+        settingsText.setTypeface(typeface, Typeface.BOLD);
+    }
+
+    /**
+     * Initialize action bar
+     */
     private void initActionBar() {
         // Set up action bar.
         // Specify that the Home button should show an "Up" caret, indicating that touching the
@@ -69,119 +97,24 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         actionBarTitle.setTypeface(typeface);
     }
 
-
-    /**
-     * Initialize activity components
-     */
-    public void init() {
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
-
-        billLayout = (RelativeLayout) findViewById(R.id.bill_layout);
-        topupLayout = (RelativeLayout) findViewById(R.id.topup_layout);
-        settingsLayout = (RelativeLayout) findViewById(R.id.settings_layout);
-//        logout = (RelativeLayout) findViewById(R.id.mobile_bank_layout_logout);
-
-        // set custom font
-//        logoutText = (TextView) findViewById(R.id.mobile_bank_layout_logout_text);
-//        logoutText.setTypeface(typeface, Typeface.BOLD);
-
-        billIcon = (TextView) findViewById(R.id.bill_icon);
-        billText = (TextView) findViewById(R.id.bill_text);
-        billIcon.setTypeface(typeface, Typeface.BOLD);
-        billText.setTypeface(typeface, Typeface.BOLD);
-
-        topupIcon = (TextView) findViewById(R.id.topup_icon);
-        topupText = (TextView) findViewById(R.id.topup_text);
-        topupIcon.setTypeface(typeface, Typeface.BOLD);
-        topupText.setTypeface(typeface, Typeface.BOLD);
-
-        settingsIcon = (TextView) findViewById(R.id.settings_icon);
-        settingsText = (TextView) findViewById(R.id.settings_text);
-        settingsIcon.setTypeface(typeface, Typeface.BOLD);
-        settingsText.setTypeface(typeface, Typeface.BOLD);
-
-        //mbankIcon = (TextView) findViewById(R.id.mbank_icon);
-        //mbankIcon.setTypeface(typeface, Typeface.BOLD);
-
-        billLayout.setOnClickListener(HomeActivity.this);
-        topupLayout.setOnClickListener(HomeActivity.this);
-        settingsLayout.setOnClickListener(HomeActivity.this);
-//        logout.setOnClickListener(ShopzHomeActivity.this);
-    }
-
     /**
      * Call when click on view
      *
      * @param view
      */
     public void onClick(View view) {
-        if (view == billLayout) {
+        if (view == relativeLayoutBill) {
             // display bill activity
+            Intent intent = new Intent(HomeActivity.this, BillActivity.class);
+            intent.putExtra("EXTRA", new Bill(1, "shop", "invno", "23", 23, "sdf"));
+
             startActivity(new Intent(HomeActivity.this, BillActivity.class));
-            //ShopzHomeActivity.this.finish();
-        } else if (view == topupLayout) {
-            // display bill list activity
+        } else if (view == relativeLayoutTopUp) {
+            // display top up activity
             startActivity(new Intent(HomeActivity.this, TopupActivity.class));
-            //ShopzHomeActivity.this.finish();
-        } else if (view == settingsLayout) {
-            // display settings activity
-            startActivity(new Intent(HomeActivity.this, BillActivity.class));  //TODO replace Bill Activity with Settings Activity
-            //ShopzHomeActivity.this.finish();
+        } else if (view == relativeLayoutSettings) {
+
         }
-//        else if (view == logout) {
-//            displayInformationMessageDialog("Are you sure, you want to logout? ");
-//        }
-    }
-
-    /**
-     * Display message dialog when user going to logout
-     *
-     * @param message
-     */
-    public void displayInformationMessageDialog(String message) {
-        final Dialog dialog = new Dialog(HomeActivity.this);
-
-        //set layout for dialog
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.share_confirm_message_dialog);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.setCancelable(true);
-
-        // set dialog texts
-        TextView messageHeaderTextView = (TextView) dialog.findViewById(R.id.information_message_dialog_layout_message_header_text);
-        TextView messageTextView = (TextView) dialog.findViewById(R.id.information_message_dialog_layout_message_text);
-        messageTextView.setText(message);
-
-        // set custom font
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
-        messageHeaderTextView.setTypeface(face);
-        messageHeaderTextView.setTypeface(null, Typeface.BOLD);
-        messageTextView.setTypeface(face);
-
-        //set ok button
-        Button okButton = (Button) dialog.findViewById(R.id.information_message_dialog_layout_ok_button);
-        okButton.setTypeface(face);
-        okButton.setTypeface(null, Typeface.BOLD);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // back to login activity
-                //startActivity(new Intent(MobileBankActivity.this, LoginActivity.class));
-                HomeActivity.this.finish();
-                dialog.cancel();
-            }
-        });
-
-        // cancel button
-        Button cancelButton = (Button) dialog.findViewById(R.id.information_message_dialog_layout_cancel_button);
-        cancelButton.setTypeface(face);
-        cancelButton.setTypeface(null, Typeface.BOLD);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        dialog.show();
     }
 
 }
