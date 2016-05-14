@@ -3,7 +3,6 @@ package com.score.shopz.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,8 +11,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.NfcAdapter;
-import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -32,29 +29,15 @@ import com.score.senzc.enums.SenzTypeEnum;
 import com.score.senzc.pojos.Senz;
 import com.score.senzc.pojos.User;
 import com.score.shopz.R;
-import com.score.shopz.exceptions.InvalidAccountException;
-import com.score.shopz.exceptions.InvalidInputFieldsException;
+import com.score.shopz.pojos.TopUp;
 import com.score.shopz.utils.ActivityUtils;
 import com.score.shopz.utils.NetworkUtil;
 
 import java.util.HashMap;
 
-//import com.score.shopz.pojos.;
-//import com.score.shopz.utils.PayUtils;
-
-//import com.wasn.pojos.BalanceQuery;
-//import com.wasn.utils.TransactionUtils;
-
-
 public class PayActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = PayActivity.class.getName();
-
-    // deals with NFC
-    private NfcAdapter nfcAdapter;
-    private PendingIntent nfcPendingIntent;
-    private IntentFilter[] nfcIntentFilters;
-    private String[][] nfcTechLists;
 
     // custom type face
     private Typeface typeface;
@@ -62,13 +45,7 @@ public class PayActivity extends Activity implements View.OnClickListener {
     // UI components
     private TextView clickToPay;
     private TextView payAmountText;
-    private TextView acceptText;
-    private TextView rejectText;
-
-    // header
-    private RelativeLayout cancel;
     private RelativeLayout accept;
-    private TextView headerText;
 
     // use to track registration timeout
     private SenzCountDownTimer senzCountDownTimer;
@@ -77,6 +54,9 @@ public class PayActivity extends Activity implements View.OnClickListener {
     // service interface
     private ISenzService senzService;
     private boolean isServiceBound;
+
+    // activity deal with TopUp
+    private TopUp topUp;
 
     // service connection
     private ServiceConnection senzServiceConnection = new ServiceConnection() {
@@ -94,19 +74,26 @@ public class PayActivity extends Activity implements View.OnClickListener {
         }
     };
 
-    // current pay
-    //private Pay pay;
+    // senz message receiver
+    private BroadcastReceiver senzMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Got message from Senz service");
+            handleSenzMessage(intent);
+        }
+    };
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pay_layout);
-        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
-        //initNfc();
         initUi();
         initActionBar();
-        initPaymentDetails();
+        initPay();
 
         // service
         senzService = null;
@@ -122,9 +109,11 @@ public class PayActivity extends Activity implements View.OnClickListener {
             intent.setClassName("com.score.shopz", "com.score.shopz.services.RemoteSenzService");
             bindService(intent, senzServiceConnection, Context.BIND_AUTO_CREATE);
         }
-
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -132,110 +121,17 @@ public class PayActivity extends Activity implements View.OnClickListener {
         unregisterReceiver(senzMessageReceiver);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-//        // enable foreground dispatch
-//        if (nfcAdapter != null) {
-//            nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, nfcIntentFilters, nfcTechLists);
-//        }
-
-//        Intent intent = getIntent();
-//        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-//            Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-//
-//            NdefMessage message = (NdefMessage) rawMessages[0];
-//            String amount = new String(message.getRecords()[0].getPayload());
-//            Log.d(TAG, amount);
-//
-//            payAmountText.setText("$" + amount);
-//        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // disable foreground dispatch
-//        if (nfcAdapter != null)
-//            nfcAdapter.disableForegroundDispatch(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onNewIntent(Intent intent) {
-//        String action = intent.getAction();
-//        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-//
-//        String s = action + "\n\n" + tag.toString();
-//        Log.d(TAG, "tag... " + s);
-//
-//        // parse through all NDEF messages and their records and pick text type only
-//        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-//        if (data != null) {
-//            NdefMessage message = (NdefMessage) data[0];
-//            String amount = new String(message.getRecords()[0].getPayload());
-//            Log.d(TAG, amount);
-//
-//            payAmountText.setText("$" + amount);
-//        }
-    }
-
-    /**
-     * Initialize NFC components
-     */
-    private void initNfc() {
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
-        } else {
-            // create an intent with tag data and deliver to this activity
-            nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-
-            // set an intent filter for all MIME data
-            IntentFilter nfcDiscoveredIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-            try {
-                nfcDiscoveredIntentFilter.addDataType("text/plain");
-                nfcIntentFilters = new IntentFilter[]{nfcDiscoveredIntentFilter};
-            } catch (Exception e) {
-                Log.e("TagDispatch", e.toString());
-            }
-
-            // tech list
-            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
-        }
-    }
-
     private void initUi() {
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
         clickToPay = (TextView) findViewById(R.id.click_to_pay);
         payAmountText = (TextView) findViewById(R.id.pay_amount_text);
-        //acceptText = (TextView) findViewById(R.id.accept_text);
-        rejectText = (TextView) findViewById(R.id.reject_text);
-
-        cancel = (RelativeLayout) findViewById(R.id.sign_in_button_panel);
-        accept = (RelativeLayout) findViewById(R.id.pay_amount_relative_layout);
-
-        cancel.setOnClickListener(PayActivity.this);
-        accept.setOnClickListener(PayActivity.this);
 
         clickToPay.setTypeface(typeface, Typeface.NORMAL);
         payAmountText.setTypeface(typeface, Typeface.BOLD);
-        //acceptText.setTypeface(typeface, Typeface.BOLD);
-        rejectText.setTypeface(typeface, Typeface.BOLD);
 
-
+        accept = (RelativeLayout) findViewById(R.id.pay_amount_relative_layout);
+        accept.setOnClickListener(PayActivity.this);
     }
 
     private void initActionBar() {
@@ -256,11 +152,18 @@ public class PayActivity extends Activity implements View.OnClickListener {
         actionBarTitle.setTypeface(typeface);
     }
 
-    private void initPaymentDetails() {
+    private void initPay() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String amount = bundle.getString("EXTRA");
-            payAmountText.setText(amount + "$");
+            topUp = bundle.getParcelable("EXTRA");
+
+            if (topUp != null) {
+                Log.i(TAG, "Top up account :" + topUp.getAccount());
+                Log.i(TAG, "Top up amount :" + topUp.getAmount());
+                Log.i(TAG, "Top up time :" + topUp.getTime());
+
+                payAmountText.setText("$" + topUp.getAmount());
+            }
         }
     }
 
@@ -273,55 +176,38 @@ public class PayActivity extends Activity implements View.OnClickListener {
         this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
     }
 
-//-------------------------------------------------
-
     /**
      * {@inheritDoc}
      */
     @Override
     public void onClick(View view) {
-        if (view == cancel) {
-            // cancel to main activity
-            PayActivity.this.finish();
-        } else if (view == accept) {
+        if (view == accept) {
             onClickPut();
         }
     }
 
-
     private void onClickPut() {
         ActivityUtils.hideSoftKeyboard(this);
 
-        try {
-            String account = "ttl";//accountEditText.getText().toString().trim();
-            double amount = Double.parseDouble(payAmountText.getText().toString().trim());
-            ActivityUtils.isValidPayFields(account, amount);
-
-            // initialize transaction
-            // TODO //pay = new Pay(1, "shop abc", account, "inv0001", amount, PayUtils.getCurrentTime().toString());
-
-            // TODO //new SenzorsDbSource(PayActivity.this).createPay(pay);
-            //navigateTransactionDetails(transaction);
-            if (NetworkUtil.isAvailableNetwork(this)) {
-                displayInformationMessageDialog("Are you sure you want to do the transaction " + /* #Account " + /*pay.getClientAccountNo() +*/ " #Amount " + 100);//pay.getPayAmount());
-            } else {
-                displayMessageDialog("#ERROR", "No network connection");
-            }
-        } catch (InvalidInputFieldsException | NumberFormatException e) {
-            e.printStackTrace();
-
-            displayMessageDialog("#ERROR", "Invalid account no/amount");
-        } catch (InvalidAccountException e) {
-            e.printStackTrace();
-
-            displayMessageDialog("#ERROR", "Account no should be 12 character length");
+        if (NetworkUtil.isAvailableNetwork(this)) {
+            displayInformationMessageDialog("Are you sure you want to top up" + " #Amount " + topUp.getAmount() + "for #Account " + topUp.getAccount());
+        } else {
+            displayMessageDialog("#ERROR", "No network connection");
         }
     }
 
-    private Senz getPutSenz() {
+    private void doPut(Senz senz) {
+        try {
+            senzService.send(senz);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Senz createPutSenz() {
         HashMap<String, String> senzAttributes = new HashMap<>();
-        senzAttributes.put("amnt", "100");//payAmountText.getText().toString().trim());
-        senzAttributes.put("acc", "shop01" /*amountEditText.getText().toString().trim()*/);
+        senzAttributes.put("amnt", "100");
+        senzAttributes.put("acc", "shop01");
         senzAttributes.put("time", ((Long) (System.currentTimeMillis() / 1000)).toString());
 
         // new senz
@@ -331,14 +217,6 @@ public class PayActivity extends Activity implements View.OnClickListener {
         User receiver = new User("", "payzbank");
 
         return new Senz(id, signature, senzType, null, receiver, senzAttributes);
-    }
-
-    private void doPut(Senz senz) {
-        try {
-            senzService.send(senz);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -377,14 +255,6 @@ public class PayActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private BroadcastReceiver senzMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Got message from Senz service");
-            handleMessage(intent);
-        }
-    };
-
 
     /**
      * Handle broadcast message receives
@@ -392,7 +262,7 @@ public class PayActivity extends Activity implements View.OnClickListener {
      *
      * @param intent intent
      */
-    private void handleMessage(Intent intent) {
+    private void handleSenzMessage(Intent intent) {
         String action = intent.getAction();
 
         if (action.equals("com.score.shopz.DATA_SENZ")) {
@@ -407,13 +277,6 @@ public class PayActivity extends Activity implements View.OnClickListener {
                 String msg = senz.getAttributes().get("msg");
                 if (msg != null && msg.equalsIgnoreCase("PUTDONE")) {
                     Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
-
-                    // save transaction in db
-//                    if (pay != null)
-//                        new SenzorsDbSource(PayActivity.this).createPay(pay);
-
-                    // navigate
-                    //navigatePayDetails(pay);
                 } else {
                     String informationMessage = "Failed to complete the payment";
                     displayMessageDialog("PUT fail", informationMessage);
@@ -465,7 +328,7 @@ public class PayActivity extends Activity implements View.OnClickListener {
     /**
      * Display message dialog when user going to logout
      *
-     * @param message
+     * @param message message to display
      */
     public void displayInformationMessageDialog(String message) {
         final Dialog dialog = new Dialog(this);
@@ -500,7 +363,7 @@ public class PayActivity extends Activity implements View.OnClickListener {
 
                 // start new timer
                 isResponseReceived = false;
-                senzCountDownTimer = new SenzCountDownTimer(16000, 5000, getPutSenz());
+                senzCountDownTimer = new SenzCountDownTimer(16000, 5000, createPutSenz());
                 senzCountDownTimer.start();
             }
         });
@@ -517,15 +380,5 @@ public class PayActivity extends Activity implements View.OnClickListener {
 
         dialog.show();
     }
-
-//    private void navigatePayDetails(Pay pay) {
-//        // navigate to transaction details
-//        Intent intent = new Intent(PayActivity.this, PayDetailsActivity.class);
-//        intent.putExtra("pay", pay);
-//        intent.putExtra("ACTIVITY_NAME", PayActivity.class.getName());
-//        startActivity(intent);
-//
-//        PayActivity.this.finish();
-//    }
 
 }
