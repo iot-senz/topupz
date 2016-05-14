@@ -32,7 +32,7 @@ import com.score.shopz.utils.JSONUtils;
 import org.json.JSONException;
 
 
-public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback {
+public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
     private static final String TAG = BillActivity.class.getName();
 
@@ -85,6 +85,9 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         unregisterReceiver(senzMessageReceiver);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         // create JSON message from TopUp
@@ -99,6 +102,15 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onNdefPushComplete(NfcEvent event) {
+        // start progress dialog
+        ActivityUtils.showProgressDialog(this, "Please wait...");
     }
 
     /**
