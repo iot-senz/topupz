@@ -293,7 +293,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
      * This method will be call after successful login
      */
     private void navigateToHome() {
-        Intent intent = new Intent(RegistrationActivity.this, HomeActivity.class);
+        Intent intent = new Intent(RegistrationActivity.this, ShopzHomeActivity.class);
         RegistrationActivity.this.startActivity(intent);
         RegistrationActivity.this.finish();
     }

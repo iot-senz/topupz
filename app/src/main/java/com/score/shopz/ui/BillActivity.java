@@ -3,7 +3,6 @@ package com.score.shopz.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,7 +15,6 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
-import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -31,31 +29,31 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.score.shopz.R;
-import com.score.shopz.exceptions.NoUserException;
-import com.score.shopz.pojos.Bill;
-import com.score.shopz.utils.BillUtils;
 import com.score.senz.ISenzService;
 import com.score.senzc.enums.SenzTypeEnum;
 import com.score.senzc.pojos.Senz;
-
+import com.score.senzc.pojos.User;
+import com.score.shopz.R;
 import com.score.shopz.db.SenzorsDbSource;
 import com.score.shopz.exceptions.InvalidAccountException;
 import com.score.shopz.exceptions.InvalidInputFieldsException;
-//import com.wasn.pojos.BalanceQuery;
+import com.score.shopz.exceptions.NoUserException;
+import com.score.shopz.pojos.Bill;
 import com.score.shopz.utils.ActivityUtils;
+import com.score.shopz.utils.BillUtils;
 import com.score.shopz.utils.NetworkUtil;
-import com.score.senzc.pojos.User;
 import com.score.shopz.utils.PreferenceUtils;
-//import com.wasn.utils.TransactionUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
+//import com.wasn.pojos.BalanceQuery;
+//import com.wasn.utils.TransactionUtils;
 
-public class BillActivity extends Activity implements View.OnClickListener, NfcAdapter.CreateNdefMessageCallback{
+
+public class BillActivity extends Activity implements View.OnClickListener, NfcAdapter.CreateNdefMessageCallback {
 
     private static final String TAG = BillActivity.class.getName();
 
@@ -161,7 +159,7 @@ public class BillActivity extends Activity implements View.OnClickListener, NfcA
         billNoText = (TextView) findViewById(R.id.bill_no);
         billAmountText = (TextView) findViewById(R.id.bill_amount);
 
-        billNoEditText = (EditText)findViewById(R.id.bill_layout_number_text);
+        billNoEditText = (EditText) findViewById(R.id.bill_layout_number_text);
         billAmountEditText = (EditText) findViewById(R.id.bill_layout_amount_text);
 
         billNoText.setTypeface(typeface, Typeface.NORMAL);
@@ -293,7 +291,6 @@ public class BillActivity extends Activity implements View.OnClickListener, NfcA
 //            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
 //        }
 //    }
-
     private void initActionBar() {
         // Set up action bar.
         // Specify that the Home button should show an "Up" caret, indicating that touching the
@@ -467,9 +464,6 @@ public class BillActivity extends Activity implements View.OnClickListener, NfcA
                     // save transaction in db
                     if (bill != null)
                         new SenzorsDbSource(BillActivity.this).createPay(bill);
-
-                    // navigate
-                    navigatePayDetails(bill);
                 } else {
                     String informationMessage = "Failed to complete the payment";
                     displayMessageDialog("PUT fail", informationMessage);
@@ -572,16 +566,6 @@ public class BillActivity extends Activity implements View.OnClickListener, NfcA
         });
 
         dialog.show();
-    }
-
-    private void navigatePayDetails(Bill bill) {
-        // navigate to transaction details
-        Intent intent = new Intent(BillActivity.this, BillDetailsActivity.class);
-        intent.putExtra("bill", bill);
-        intent.putExtra("ACTIVITY_NAME", BillActivity.class.getName());
-        startActivity(intent);
-
-        BillActivity.this.finish();
     }
 
 }
