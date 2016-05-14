@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#e4e4e4"
+    android:background="#ffffff"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -46,6 +46,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
+        android:layout_margin="10dp"
         android:orientation="vertical" >
 
         <!--<LinearLayout-->
@@ -67,7 +68,7 @@
             android:id="@+id/bill_layout"
             android:background="@drawable/app_button_selector"
             android:layout_height="fill_parent"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="10dp"
             android:clickable="true"
             android:layout_weight="1">
             <TextView
@@ -99,7 +100,7 @@
             android:id="@+id/topup_layout"
             android:background="@drawable/app_button_selector"
             android:layout_height="fill_parent"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="10dp"
             android:clickable="true"
             android:layout_weight="1">
             <TextView
@@ -108,7 +109,7 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="20dp"
                 android:gravity="center"
-                android:text="%"
+                android:text="$"
                 android:textColor="#fff"
                 android:textSize="30sp"
                 android:layout_alignParentLeft="true"
@@ -162,7 +163,6 @@
             android:clickable="true"
             android:background="@drawable/app_button_selector"
             android:layout_height="fill_parent"
-            android:layout_margin="10dp"
             android:layout_weight="1">
             <TextView
                 android:layout_width="70dp"
@@ -170,7 +170,7 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="20dp"
                 android:gravity="center"
-                android:text="!"
+                android:text="$"
                 android:textColor="#fff"
                 android:textSize="30sp"
                 android:layout_alignParentLeft="true"
