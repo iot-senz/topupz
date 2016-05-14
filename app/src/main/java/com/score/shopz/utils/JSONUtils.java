@@ -24,8 +24,8 @@ public class JSONUtils {
      */
     public static String getBillJson(Bill bill) throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("acc", "user1");
-        jsonObject.put("amnt", "23");
+        jsonObject.put("acc", bill.getAccount());
+        jsonObject.put("amnt", bill.getAmount());
 
         return jsonObject.toString();
     }

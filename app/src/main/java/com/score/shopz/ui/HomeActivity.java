@@ -10,8 +10,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.score.senzc.pojos.User;
 import com.score.shopz.R;
+import com.score.shopz.exceptions.NoUserException;
 import com.score.shopz.pojos.Bill;
+import com.score.shopz.utils.PreferenceUtils;
 
 /**
  * Created by chathura on 5/13/16.
@@ -104,16 +107,30 @@ public class HomeActivity extends Activity implements View.OnClickListener {
      */
     public void onClick(View view) {
         if (view == relativeLayoutBill) {
-            // display bill activity
-            Intent intent = new Intent(HomeActivity.this, BillActivity.class);
-            intent.putExtra("EXTRA", new Bill(1, "shop", "invno", "23", 23, "sdf"));
-
-            startActivity(new Intent(HomeActivity.this, BillActivity.class));
+            navigateToBillActivity();
         } else if (view == relativeLayoutTopUp) {
             // display top up activity
             startActivity(new Intent(HomeActivity.this, TopupActivity.class));
         } else if (view == relativeLayoutSettings) {
 
+        }
+    }
+
+    /**
+     * Navigate to BillActivity
+     */
+    private void navigateToBillActivity() {
+        // create Bill first
+        try {
+            User user = PreferenceUtils.getUser(this);
+            Bill bill = new Bill("0045121", user.getUsername(), "00");
+
+            // display bill activity
+            Intent intent = new Intent(HomeActivity.this, BillActivity.class);
+            intent.putExtra("EXTRA", bill);
+            startActivity(intent);
+        } catch (NoUserException e) {
+            e.printStackTrace();
         }
     }
 

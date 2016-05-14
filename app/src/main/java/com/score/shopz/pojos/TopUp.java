@@ -4,34 +4,38 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * POJO to hold Bill attributes
+ * POJO class to hold topup details
  *
  * @author eranga bandara(erangaeb@gmail.com)
  */
-public class Bill implements Parcelable {
-    String billNo;
+public class TopUp implements Parcelable {
     String account;
     String amount;
+    String time;
 
-    public Bill(String billNo, String account, String amount) {
-        this.billNo = billNo;
+    public TopUp(String account, String amount, String time) {
         this.account = account;
         this.amount = amount;
+        this.time = time;
     }
 
-    protected Bill(Parcel in) {
-        billNo = in.readString();
+    protected TopUp(Parcel in) {
         account = in.readString();
         amount = in.readString();
+        time = in.readString();
     }
 
-    public String getBillNo() {
-        return billNo;
-    }
+    public static final Creator<TopUp> CREATOR = new Creator<TopUp>() {
+        @Override
+        public TopUp createFromParcel(Parcel in) {
+            return new TopUp(in);
+        }
 
-    public void setBillNo(String billNo) {
-        this.billNo = billNo;
-    }
+        @Override
+        public TopUp[] newArray(int size) {
+            return new TopUp[size];
+        }
+    };
 
     public String getAccount() {
         return account;
@@ -49,17 +53,13 @@ public class Bill implements Parcelable {
         this.amount = amount;
     }
 
-    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
-        @Override
-        public Bill createFromParcel(Parcel in) {
-            return new Bill(in);
-        }
+    public String getTime() {
+        return time;
+    }
 
-        @Override
-        public Bill[] newArray(int size) {
-            return new Bill[size];
-        }
-    };
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     @Override
     public int describeContents() {
@@ -68,8 +68,8 @@ public class Bill implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(billNo);
         dest.writeString(account);
         dest.writeString(amount);
+        dest.writeString(time);
     }
 }

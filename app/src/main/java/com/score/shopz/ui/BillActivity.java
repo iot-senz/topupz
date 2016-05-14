@@ -44,8 +44,11 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
 
     // UI components
     private TextView billNoText;
+    private TextView billAccountText;
     private TextView billAmountText;
+
     private EditText billNoEditText;
+    private EditText billAccountEditText;
     private EditText billAmountEditText;
 
     // Activity deals with a bill
@@ -73,6 +76,15 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         registerReceiver(senzMessageReceiver, new IntentFilter("com.score.shopz.DATA_SENZ"));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(senzMessageReceiver);
+    }
+
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         // create JSON message from TopUp
@@ -96,13 +108,20 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
         billNoText = (TextView) findViewById(R.id.bill_no);
+        billAccountText = (TextView) findViewById(R.id.bill_account);
         billAmountText = (TextView) findViewById(R.id.bill_amount);
 
         billNoEditText = (EditText) findViewById(R.id.bill_layout_number_text);
+        billAccountEditText = (EditText) findViewById(R.id.bill_layout_account_text);
         billAmountEditText = (EditText) findViewById(R.id.bill_layout_amount_text);
 
         billNoText.setTypeface(typeface, Typeface.NORMAL);
+        billAccountText.setTypeface(typeface, Typeface.NORMAL);
         billAmountText.setTypeface(typeface, Typeface.NORMAL);
+
+        billNoEditText.setTypeface(typeface, Typeface.BOLD);
+        billAccountEditText.setTypeface(typeface, Typeface.BOLD);
+        billAmountEditText.setTypeface(typeface, Typeface.BOLD);
     }
 
     private void initActionBar() {
@@ -140,8 +159,11 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             bill = bundle.getParcelable("EXTRA");
-            billNoEditText.setText(bill.getInvoiceNumber());
-            billAmountText.setText(bill.getPayAmount() + "");
+
+            if (bill != null) {
+                billNoEditText.setText(bill.getBillNo());
+                billAccountEditText.setText(bill.getAccount());
+            }
         }
     }
 
@@ -153,7 +175,6 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         super.onBackPressed();
         this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
     }
-
 
     /**
      * Handle broadcast message receives
