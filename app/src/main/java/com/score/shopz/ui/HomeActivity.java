@@ -111,6 +111,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         } else if (view == relativeLayoutTopUp) {
             // display top up activity
             startActivity(new Intent(HomeActivity.this, TopupActivity.class));
+            overridePendingTransition(R.anim.right_in, R.anim.stay_in);
         } else if (view == relativeLayoutSettings) {
 
         }
@@ -129,6 +130,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
             Intent intent = new Intent(HomeActivity.this, BillActivity.class);
             intent.putExtra("EXTRA", bill);
             startActivity(intent);
+            overridePendingTransition(R.anim.right_in, R.anim.stay_in);
         } catch (NoUserException e) {
             e.printStackTrace();
         }

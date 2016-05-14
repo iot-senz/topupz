@@ -173,7 +173,7 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
+        this.overridePendingTransition(R.anim.stay_in, R.anim.right_out);
     }
 
     /**

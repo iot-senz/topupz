@@ -148,4 +148,13 @@ public class TopupActivity extends Activity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.overridePendingTransition(R.anim.stay_in, R.anim.right_out);
+    }
+
 }
