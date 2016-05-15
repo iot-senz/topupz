@@ -92,6 +92,9 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         // create JSON message from TopUp
         if (bill != null) try {
+            // populate bill with amount first
+            // then create JSON string to send via NFC
+            bill.setAmount(billAmountEditText.getText().toString().trim());
             String message = JSONUtils.getBillJson(bill);
 
             NdefRecord ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
@@ -136,6 +139,9 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         billAmountEditText.setTypeface(typeface, Typeface.BOLD);
     }
 
+    /**
+     * Initialize action bar from here
+     */
     private void initActionBar() {
         // Set up action bar.
         // Specify that the Home button should show an "Up" caret, indicating that touching the
