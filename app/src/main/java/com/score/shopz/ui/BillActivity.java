@@ -114,6 +114,9 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
     public void onNdefPushComplete(NfcEvent event) {
         // start progress dialog
         ActivityUtils.showProgressDialog(this, "Please wait...");
+
+        // toast to notify wait
+        Toast.makeText(this, "Please wait", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -170,6 +173,7 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
             Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
         } else {
             nfcAdapter.setNdefPushMessageCallback(this, this);
+            nfcAdapter.setOnNdefPushCompleteCallback(this, this);
         }
     }
 
