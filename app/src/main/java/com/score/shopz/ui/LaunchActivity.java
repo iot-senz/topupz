@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.score.shopz.R;
 import com.score.shopz.exceptions.NoUserException;
+import com.score.shopz.services.RemoteSenzService;
 import com.score.shopz.utils.PreferenceUtils;
 
 /**
@@ -25,6 +26,9 @@ public class LaunchActivity extends Activity {
         try {
             PreferenceUtils.getUser(this);
 
+            // start service again
+            initSenzService();
+
             // have user, so move to home
             Intent intent = new Intent(this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -39,5 +43,14 @@ public class LaunchActivity extends Activity {
             finish();
             startActivity(intent);
         }
+    }
+
+    /**
+     * Initialize senz service
+     */
+    private void initSenzService() {
+        // start service from here
+        Intent serviceIntent = new Intent(this, RemoteSenzService.class);
+        startService(serviceIntent);
     }
 }
