@@ -63,7 +63,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:textColor="#000000">
+                android:textColor="#4a4a4a">
             </TextView>
 
         </RelativeLayout>

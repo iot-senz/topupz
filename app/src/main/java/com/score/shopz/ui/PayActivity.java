@@ -284,6 +284,10 @@ public class PayActivity extends Activity implements View.OnClickListener {
                 String msg = senz.getAttributes().get("msg");
                 if (msg != null && msg.equalsIgnoreCase("PUTDONE")) {
                     Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
+
+                    // exit from activity
+                    this.finish();
+                    this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
                 } else {
                     String informationMessage = "Failed to complete the payment";
                     displayMessageDialog("PUT fail", informationMessage);
