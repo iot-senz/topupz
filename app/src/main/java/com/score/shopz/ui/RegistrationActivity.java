@@ -54,6 +54,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
 
     // UI fields
     private EditText editTextUsername;
+    private TextView singUpButtonText;
     private RelativeLayout signUpButton;
     private Typeface typeface;
 
@@ -115,10 +116,13 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
      */
     private void initUi() {
         editTextUsername = (EditText) findViewById(R.id.registration_phone_no);
+        singUpButtonText = (TextView) findViewById(R.id.registration_sign_up_text);
+
         signUpButton = (RelativeLayout) findViewById(R.id.registration_sign_up_button);
         signUpButton.setOnClickListener(RegistrationActivity.this);
 
-        editTextUsername.setTypeface(typeface, Typeface.NORMAL);
+        editTextUsername.setTypeface(typeface, Typeface.BOLD);
+        singUpButtonText.setTypeface(typeface, Typeface.BOLD);
     }
 
     /**
