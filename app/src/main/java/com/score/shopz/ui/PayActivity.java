@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class PayActivity extends Activity implements View.OnClickListener {
     private Typeface typeface;
 
     // UI components
+    private TextView textViewAppIcon;
     private TextView clickToPay;
     private TextView payAmountText;
     private RelativeLayout accept;
@@ -89,6 +91,8 @@ public class PayActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.pay_layout);
 
         initUi();
@@ -124,10 +128,12 @@ public class PayActivity extends Activity implements View.OnClickListener {
     private void initUi() {
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
+        textViewAppIcon = (TextView) findViewById(R.id.app_icon);
         clickToPay = (TextView) findViewById(R.id.click_to_pay);
         payAmountText = (TextView) findViewById(R.id.pay_amount_text);
 
-        clickToPay.setTypeface(typeface, Typeface.NORMAL);
+        textViewAppIcon.setTypeface(typeface, Typeface.BOLD);
+        clickToPay.setTypeface(typeface, Typeface.BOLD);
         payAmountText.setTypeface(typeface, Typeface.BOLD);
 
         accept = (RelativeLayout) findViewById(R.id.pay_amount_relative_layout);
@@ -139,9 +145,9 @@ public class PayActivity extends Activity implements View.OnClickListener {
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.
         final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Pay");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setTitle("Top Up");
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // set custom font for
         //  1. action bar title
@@ -150,6 +156,7 @@ public class PayActivity extends Activity implements View.OnClickListener {
         TextView actionBarTitle = (TextView) (findViewById(titleId));
         actionBarTitle.setTextColor(getResources().getColor(R.color.white));
         actionBarTitle.setTypeface(typeface);
+        actionBar.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
     }
 
     private void initPay() {

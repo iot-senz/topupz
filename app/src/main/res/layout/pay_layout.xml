@@ -3,13 +3,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#384e77"
+    android:background="#ffffff"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
+        android:background="@drawable/blur6"
         android:orientation="vertical"
         android:padding="0dp">
 
@@ -17,15 +18,18 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-            <RelativeLayout
+            <TextView
                 android:id="@+id/app_icon"
                 android:layout_width="50dp"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="100dp"
                 android:layout_height="50dp"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:text="#"
+                android:textColor="#fff"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/payz_round">
-
-            </RelativeLayout>
+                android:background="@drawable/circle_shape_red">
+            </TextView>
 
             <TextView
                 android:layout_below="@id/app_icon"
@@ -37,8 +41,8 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="You have purchased $20.00 \namount of goods. Please tap below to pay the amount"
-                android:textColor="#FFFFFF"
+                android:text="You gonna Top up $20.00 \namount with PayZ. Please tap tap your phone to NFC pad"
+                android:textColor="#fff"
                 android:textSize="20sp"
                 android:visibility="visible"></TextView>
 
@@ -55,7 +59,6 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/circle_shape_red"
                     android:visibility="visible">
-                    gone
                     <TextView
                         android:id="@+id/pay_amount_text"
                         android:layout_width="wrap_content"
@@ -63,9 +66,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
-                        android:text="20.00"
+                        android:text="$20.00"
                         android:textColor="#ffffff"
-                        android:textSize="50sp"></TextView>
+                        android:textSize="50sp">
+                    </TextView>
 
                 </RelativeLayout>
 
@@ -97,7 +101,6 @@
                         android:textColor="#FF5f82c3"
                         android:textSize="16sp"
                         android:textStyle="bold">
-
                     </TextView>
                 </RelativeLayout>
 
