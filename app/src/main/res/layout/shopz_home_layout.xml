@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ffffff"
+    android:background="#fff"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -91,7 +91,7 @@
                 android:id="@+id/bill_text"
                 android:layout_toRightOf="@+id/bill_icon"
                 android:text="Bill"
-                android:textColor="#306d97"
+                android:textColor="#b5c976"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
@@ -123,7 +123,7 @@
                 android:id="@+id/topup_text"
                 android:layout_toRightOf="@+id/topup_icon"
                 android:text="Top Up"
-                android:textColor="#306d97"
+                android:textColor="#b5c976"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
@@ -184,7 +184,7 @@
                 android:id="@+id/settings_text"
                 android:layout_toRightOf="@+id/settings_icon"
                 android:text="Settings"
-                android:textColor="#306d97"
+                android:textColor="#b5c976"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 

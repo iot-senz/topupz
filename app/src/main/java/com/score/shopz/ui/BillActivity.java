@@ -149,7 +149,7 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Bill");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
+        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff666666));
 
         // set custom font for
         //  1. action bar title

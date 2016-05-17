@@ -123,7 +123,7 @@ public class TopupActivity extends Activity {
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Top Up");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff384e77));
+        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff666666));
 
         // set custom font for
         //  1. action bar title
