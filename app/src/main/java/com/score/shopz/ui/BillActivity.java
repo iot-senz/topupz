@@ -113,10 +113,16 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
     @Override
     public void onNdefPushComplete(NfcEvent event) {
         // start progress dialog
-        ActivityUtils.showProgressDialog(this, "Please wait...");
+        //ActivityUtils.showProgressDialog(this, "Please wait...");
 
-        // toast to notify wait
-        Toast.makeText(this, "Please wait", Toast.LENGTH_LONG).show();
+        // need to run on UI thread since beam touch involved here
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // toast to notify wait
+                Toast.makeText(BillActivity.this, "Please wait", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
