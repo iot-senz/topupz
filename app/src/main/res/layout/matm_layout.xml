@@ -21,36 +21,38 @@
             <TextView
                 android:id="@+id/app_icon"
                 android:layout_width="50dp"
-                android:layout_marginTop="100dp"
                 android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/circle_shape_red"
                 android:gravity="center"
-                android:textSize="30sp"
                 android:text="#"
                 android:textColor="#fff"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/circle_shape_red">
+                android:textSize="30sp">
             </TextView>
 
             <TextView
-                android:layout_below="@id/app_icon"
                 android:id="@+id/click_to_pay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/app_icon"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="You gonna make Top Up \n with PayZ. Please tap below to confirm"
+                android:text="Please tap your phone \n in the NFC pad at shop to confirm the payment"
                 android:textColor="#fff"
                 android:textSize="20sp"
-                android:visibility="visible"></TextView>
+                android:visibility="visible">
+
+            </TextView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="50dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/click_to_pay"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="50dp">
 
                 <RelativeLayout
                     android:id="@+id/pay_amount_relative_layout"
@@ -59,6 +61,7 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/circle_shape_red"
                     android:visibility="visible">
+
                     <TextView
                         android:id="@+id/pay_amount_text"
                         android:layout_width="wrap_content"
@@ -66,11 +69,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
-                        android:text="$20.00"
+                        android:text="42w3e4"
                         android:textColor="#ffffff"
                         android:textSize="50sp">
                     </TextView>
-
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -101,6 +103,7 @@
                         android:textColor="#FF5f82c3"
                         android:textSize="16sp"
                         android:textStyle="bold">
+
                     </TextView>
                 </RelativeLayout>
 

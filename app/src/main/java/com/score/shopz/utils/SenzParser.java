@@ -3,6 +3,7 @@ package com.score.shopz.utils;
 import com.score.senzc.enums.SenzTypeEnum;
 import com.score.senzc.pojos.Senz;
 import com.score.senzc.pojos.User;
+import com.score.shopz.pojos.Matm;
 
 import java.util.HashMap;
 
@@ -63,6 +64,14 @@ public class SenzParser {
 //        System.out.println("------------");
 
         return senz;
+    }
+
+    public static Matm getMatm(Senz senz) {
+        String tId = senz.getAttributes().get("tid");
+        String key = senz.getAttributes().get("key");
+        String user = senz.getReceiver().getUsername();
+
+        return new Matm(tId, key);
     }
 
     public static String getSenzPayload(Senz senz) {

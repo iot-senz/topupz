@@ -26,8 +26,10 @@ import android.widget.Toast;
 import com.score.senzc.pojos.Senz;
 import com.score.shopz.R;
 import com.score.shopz.pojos.Bill;
+import com.score.shopz.pojos.Matm;
 import com.score.shopz.utils.ActivityUtils;
 import com.score.shopz.utils.JSONUtils;
+import com.score.shopz.utils.SenzParser;
 
 import org.json.JSONException;
 
@@ -216,17 +218,19 @@ public class BillActivity extends Activity implements NfcAdapter.CreateNdefMessa
         if (action.equals("com.score.shopz.DATA_SENZ")) {
             Senz senz = intent.getExtras().getParcelable("SENZ");
 
-            if (senz.getAttributes().containsKey("msg")) {
-                // msg response received
+            if (senz.getAttributes().containsKey("tid") && senz.getAttributes().containsKey("key")) {
+                // Matm response received
                 ActivityUtils.cancelProgressDialog();
 
-                String msg = senz.getAttributes().get("msg");
-                if (msg != null && msg.equalsIgnoreCase("PUTDONE")) {
-                    Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
-                } else {
-                    String informationMessage = "Failed to complete the payment";
-                    displayMessageDialog("PUT fail", informationMessage);
-                }
+                // create Matm object from senz
+                Matm matm = SenzParser.getMatm(senz);
+
+                // launch Matm activity
+                Intent mapIntent = new Intent(this, MatmActivity.class);
+                mapIntent.putExtra("EXTRA", matm);
+                startActivity(mapIntent);
+                this.finish();
+                overridePendingTransition(R.anim.stay_in, R.anim.right_in);
             }
         }
     }

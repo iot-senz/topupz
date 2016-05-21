@@ -88,8 +88,18 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.
         final ActionBar actionBar = getActionBar();
-        actionBar.setTitle("Shopz");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff666666));
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xff666666));
+
+        // initialize action bar title with current user
+        try {
+            User user = PreferenceUtils.getUser(this);
+            actionBar.setTitle("ShopZ @" + user.getUsername());
+        } catch (NoUserException e) {
+            e.printStackTrace();
+
+            // no user
+            actionBar.setTitle("ShopZ @");
+        }
 
         // set custom font for
         //  1. action bar title
