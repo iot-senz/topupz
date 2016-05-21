@@ -3,6 +3,7 @@ package com.score.shopz.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,16 +13,22 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
+import android.nfc.Tag;
+import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +39,10 @@ import com.score.senzc.pojos.User;
 import com.score.shopz.R;
 import com.score.shopz.pojos.Matm;
 import com.score.shopz.utils.ActivityUtils;
-import com.score.shopz.utils.NetworkUtil;
-import com.score.shopz.utils.SenzParser;
 
 import java.util.HashMap;
 
-public class MatmActivity extends Activity implements View.OnClickListener {
+public class MatmActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
     private static final String TAG = MatmActivity.class.getName();
 
@@ -49,8 +54,6 @@ public class MatmActivity extends Activity implements View.OnClickListener {
     private TextView clickToPay;
     private TextView payAmountText;
 
-    private RelativeLayout accept;
-
     // use to track registration timeout
     private SenzCountDownTimer senzCountDownTimer;
     private boolean isResponseReceived;
@@ -59,8 +62,16 @@ public class MatmActivity extends Activity implements View.OnClickListener {
     private ISenzService senzService;
     private boolean isServiceBound;
 
-    // activity deal with payz
-    private Matm matm;
+    // deals with NFC
+    private NfcAdapter nfcAdapter;
+    private PendingIntent nfcPendingIntent;
+    private IntentFilter[] nfcIntentFilters;
+    private String[][] nfcTechLists;
+
+
+    // activity deal with matm
+    private Matm thisMatm;
+    private String receivedKey;
 
     // service connection
     private ServiceConnection senzServiceConnection = new ServiceConnection() {
@@ -97,24 +108,105 @@ public class MatmActivity extends Activity implements View.OnClickListener {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.matm_layout);
 
+        initNfc();
         initUi();
         initActionBar();
-        initPay();
+        initMatm();
 
         // service
         senzService = null;
         isServiceBound = false;
 
         // register broadcast receiver
-        registerReceiver(senzMessageReceiver, new IntentFilter("com.score.payz.DATA_SENZ"));
+        registerReceiver(senzMessageReceiver, new IntentFilter("com.score.shopz.DATA_SENZ"));
 
         // bind with senz service
         // bind to service from here as well
         if (!isServiceBound) {
             Intent intent = new Intent();
-            intent.setClassName("com.score.payz", "com.score.payz.services.RemoteSenzService");
+            intent.setClassName("com.score.shopz", "com.score.shopz.services.RemoteSenzService");
             bindService(intent, senzServiceConnection, Context.BIND_AUTO_CREATE);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // enable foreground dispatch
+        if (nfcAdapter != null) {
+            nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, nfcIntentFilters, nfcTechLists);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // disable foreground dispatch
+        if (nfcAdapter != null)
+            nfcAdapter.disableForegroundDispatch(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onNewIntent(Intent intent) {
+        String action = intent.getAction();
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+        Log.d(TAG, "New intent action " + action);
+        Log.d(TAG, "New intent tag " + tag.toString());
+
+        // parse through all NDEF messages and their records and pick text type only
+        // we only send one NDEF message(as a JSON string)
+        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        if (data != null) {
+            NdefMessage message = (NdefMessage) data[0];
+            receivedKey = new String(message.getRecords()[0].getPayload());
+            Log.d(TAG, "NFC Data received, " + receivedKey);
+
+            // TODO process receive data
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
+        if (thisMatm != null) {
+            NdefRecord ndefRecord = NdefRecord.createMime("text/plain", thisMatm.getKey().getBytes());
+
+            return new NdefMessage(ndefRecord);
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onNdefPushComplete(NfcEvent event) {
+        // need to run on UI thread since beam touch involved here
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // start progress dialog
+                //ActivityUtils.showProgressDialog(this, "Please wait...");
+
+                // toast to notify wait
+                Toast.makeText(MatmActivity.this, "Please wait", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -127,6 +219,36 @@ public class MatmActivity extends Activity implements View.OnClickListener {
         unregisterReceiver(senzMessageReceiver);
     }
 
+    /**
+     * Initialize NFC components
+     */
+    private void initNfc() {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
+        } else {
+            // set listeners to receive data
+            nfcAdapter.setNdefPushMessageCallback(this, this);
+            nfcAdapter.setOnNdefPushCompleteCallback(this, this);
+
+            // create an intent with tag data and deliver to this activity
+            nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+            // set an intent filter for all MIME data
+            IntentFilter nfcDiscoveredIntentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            try {
+                nfcDiscoveredIntentFilter.addDataType("text/plain");
+                nfcIntentFilters = new IntentFilter[]{nfcDiscoveredIntentFilter};
+            } catch (Exception e) {
+                Log.e("TagDispatch", e.toString());
+            }
+
+            // tech list
+            nfcTechLists = new String[][]{new String[]{NfcF.class.getName()}};
+        }
+    }
+
     private void initUi() {
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
@@ -137,9 +259,6 @@ public class MatmActivity extends Activity implements View.OnClickListener {
         textViewAppIcon.setTypeface(typeface, Typeface.BOLD);
         clickToPay.setTypeface(typeface, Typeface.BOLD);
         payAmountText.setTypeface(typeface, Typeface.BOLD);
-
-        accept = (RelativeLayout) findViewById(R.id.pay_amount_relative_layout);
-        accept.setOnClickListener(MatmActivity.this);
     }
 
     private void initActionBar() {
@@ -161,16 +280,16 @@ public class MatmActivity extends Activity implements View.OnClickListener {
         actionBar.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
     }
 
-    private void initPay() {
+    private void initMatm() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            matm = bundle.getParcelable("EXTRA");
+            thisMatm = bundle.getParcelable("EXTRA");
 
-            if (matm != null) {
-                Log.i(TAG, "Matm tid :" + matm.gettId());
-                Log.i(TAG, "Matm key :" + matm.getKey());
+            if (thisMatm != null) {
+                Log.i(TAG, "Matm tid :" + thisMatm.gettId());
+                Log.i(TAG, "Matm key :" + thisMatm.getKey());
 
-                payAmountText.setText(matm.getKey());
+                payAmountText.setText(thisMatm.getKey());
             }
         }
     }
@@ -184,24 +303,13 @@ public class MatmActivity extends Activity implements View.OnClickListener {
         this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onClick(View view) {
-        if (view == accept) {
-            onClickPut();
-        }
-    }
-
     private void onClickPut() {
-        ActivityUtils.hideSoftKeyboard(this);
+        ActivityUtils.showProgressDialog(MatmActivity.this, "Please wait...");
 
-        if (NetworkUtil.isAvailableNetwork(this)) {
-            //displayInformationMessageDialog("Are you sure you want to pay the amount " + payz.getAmount() + "$");
-        } else {
-            displayMessageDialog("#ERROR", "No network connection");
-        }
+        // start new timer
+        isResponseReceived = false;
+        senzCountDownTimer = new SenzCountDownTimer(16000, 5000, createPutSenz());
+        senzCountDownTimer.start();
     }
 
     private void doPut(Senz senz) {
@@ -214,8 +322,8 @@ public class MatmActivity extends Activity implements View.OnClickListener {
 
     private Senz createPutSenz() {
         HashMap<String, String> senzAttributes = new HashMap<>();
-        senzAttributes.put("tid", matm.gettId());
-        senzAttributes.put("key", matm.getKey());
+        senzAttributes.put("tid", thisMatm.gettId());
+        senzAttributes.put("key", thisMatm.getKey());
         senzAttributes.put("time", ((Long) (System.currentTimeMillis() / 1000)).toString());
 
         // new senz
@@ -263,7 +371,6 @@ public class MatmActivity extends Activity implements View.OnClickListener {
         }
     }
 
-
     /**
      * Handle broadcast message receives
      * Need to handle registration success failure here
@@ -273,36 +380,10 @@ public class MatmActivity extends Activity implements View.OnClickListener {
     private void handleSenzMessage(Intent intent) {
         String action = intent.getAction();
 
-        if (action.equals("com.score.payz.DATA_SENZ")) {
+        if (action.equals("com.score.shopz.DATA_SENZ")) {
             Senz senz = intent.getExtras().getParcelable("SENZ");
 
-            if (senz.getAttributes().containsKey("tid") && senz.getAttributes().containsKey("key")) {
-                // Matm response received
-                ActivityUtils.cancelProgressDialog();
-                isResponseReceived = true;
-                senzCountDownTimer.cancel();
-
-                // create Matm object from senz
-                Matm matm = SenzParser.getMatm(senz);
-
-                // launch Matm activity
-
-                String msg = senz.getAttributes().get("msg");
-                if (msg != null && msg.equalsIgnoreCase("PUTDONE")) {
-                    Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
-
-                    // exit from the activity
-                    this.finish();
-                    this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
-
-                    // save transaction in db
-//                    if (matm != null)
-//                        new PayzDbSource(MatmActivity.this).createPayz(payz);
-                } else {
-                    String informationMessage = "Failed to complete the payment";
-                    displayMessageDialog("ERROR", informationMessage);
-                }
-            }
+            // TODO process response
         }
     }
 
@@ -338,62 +419,6 @@ public class MatmActivity extends Activity implements View.OnClickListener {
         okButton.setTypeface(face);
         okButton.setTypeface(null, Typeface.BOLD);
         okButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        dialog.show();
-    }
-
-    /**
-     * Display message dialog when user going to logout
-     *
-     * @param message message to display
-     */
-    public void displayInformationMessageDialog(String message) {
-        final Dialog dialog = new Dialog(this);
-
-        //set layout for dialog
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.share_confirm_message_dialog);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.setCancelable(true);
-
-        // set dialog texts
-        TextView messageHeaderTextView = (TextView) dialog.findViewById(R.id.information_message_dialog_layout_message_header_text);
-        TextView messageTextView = (TextView) dialog.findViewById(R.id.information_message_dialog_layout_message_text);
-        messageTextView.setText(message);
-
-        // set custom font
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
-        messageHeaderTextView.setTypeface(face);
-        messageHeaderTextView.setTypeface(null, Typeface.BOLD);
-        messageTextView.setTypeface(face);
-
-        //set ok button
-        Button okButton = (Button) dialog.findViewById(R.id.information_message_dialog_layout_ok_button);
-        okButton.setTypeface(face);
-        okButton.setTypeface(null, Typeface.BOLD);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // do transaction
-                dialog.cancel();
-
-                ActivityUtils.showProgressDialog(MatmActivity.this, "Please wait...");
-
-                // start new timer
-                isResponseReceived = false;
-                senzCountDownTimer = new SenzCountDownTimer(16000, 5000, createPutSenz());
-                senzCountDownTimer.start();
-            }
-        });
-
-        // cancel button
-        Button cancelButton = (Button) dialog.findViewById(R.id.information_message_dialog_layout_cancel_button);
-        cancelButton.setTypeface(face);
-        cancelButton.setTypeface(null, Typeface.BOLD);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dialog.cancel();
             }
