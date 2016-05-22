@@ -174,6 +174,7 @@ public class MatmActivity extends Activity implements NfcAdapter.CreateNdefMessa
             Log.d(TAG, "NFC Data received, " + receivedKey);
 
             // TODO process receive data
+            onClickPut();
         }
     }
 
@@ -323,7 +324,7 @@ public class MatmActivity extends Activity implements NfcAdapter.CreateNdefMessa
     private Senz createPutSenz() {
         HashMap<String, String> senzAttributes = new HashMap<>();
         senzAttributes.put("tid", thisMatm.gettId());
-        senzAttributes.put("key", thisMatm.getKey());
+        senzAttributes.put("key", receivedKey);
         senzAttributes.put("time", ((Long) (System.currentTimeMillis() / 1000)).toString());
 
         // new senz

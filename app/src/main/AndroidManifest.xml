@@ -124,7 +124,8 @@
 
         <receiver
             android:name="com.score.shopz.receivers.AlarmReceiver"
-            android:process=":remote"></receiver>
+            android:process=":remote">
+        </receiver>
 
     </application>
 

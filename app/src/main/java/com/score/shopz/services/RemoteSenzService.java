@@ -185,7 +185,7 @@ public class RemoteSenzService extends Service implements ShareSenzListener {
     }
 
     /**
-     * Start thread to send PING message to server in every 28 minutes
+     * Start thread to send PING message to server in every 15 minutes
      */
     private void initPingSender() {
         // register ping alarm receiver
