@@ -23,16 +23,17 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.score.senz.ISenzService;
 import com.score.senzc.enums.SenzTypeEnum;
 import com.score.senzc.pojos.Senz;
 import com.score.senzc.pojos.User;
 import com.score.topupz.R;
+import com.score.topupz.pojos.Matm;
 import com.score.topupz.pojos.TopUp;
 import com.score.topupz.utils.ActivityUtils;
 import com.score.topupz.utils.NetworkUtil;
+import com.score.topupz.utils.SenzParser;
 
 import java.util.HashMap;
 
@@ -262,7 +263,6 @@ public class PayActivity extends Activity implements View.OnClickListener {
         }
     }
 
-
     /**
      * Handle broadcast message receives
      * Need to handle registration success failure here
@@ -275,23 +275,21 @@ public class PayActivity extends Activity implements View.OnClickListener {
         if (action.equals("com.score.topupz.DATA_SENZ")) {
             Senz senz = intent.getExtras().getParcelable("SENZ");
 
-            if (senz.getAttributes().containsKey("msg")) {
-                // msg response received
+            if (senz.getAttributes().containsKey("tid") && senz.getAttributes().containsKey("key")) {
+                // Matm response received
                 ActivityUtils.cancelProgressDialog();
                 isResponseReceived = true;
                 senzCountDownTimer.cancel();
 
-                String msg = senz.getAttributes().get("msg");
-                if (msg != null && msg.equalsIgnoreCase("PUTDONE")) {
-                    Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
+                // create Matm object from senz
+                Matm matm = SenzParser.getMatm(senz);
 
-                    // exit from activity
-                    this.finish();
-                    this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
-                } else {
-                    String informationMessage = "Failed to complete the payment";
-                    displayMessageDialog("PUT fail", informationMessage);
-                }
+                // launch Matm activity
+                Intent mapIntent = new Intent(this, MatmActivity.class);
+                mapIntent.putExtra("EXTRA", matm);
+                startActivity(mapIntent);
+                this.finish();
+                overridePendingTransition(R.anim.stay_in, R.anim.right_in);
             }
         }
     }

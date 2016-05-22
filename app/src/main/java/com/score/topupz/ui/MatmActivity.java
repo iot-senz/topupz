@@ -384,7 +384,25 @@ public class MatmActivity extends Activity implements NfcAdapter.CreateNdefMessa
         if (action.equals("com.score.topupz.DATA_SENZ")) {
             Senz senz = intent.getExtras().getParcelable("SENZ");
 
-            // TODO process response
+            // process response
+            if (senz.getAttributes().containsKey("msg")) {
+                // msg response received
+                ActivityUtils.cancelProgressDialog();
+                isResponseReceived = true;
+                senzCountDownTimer.cancel();
+
+                String msg = senz.getAttributes().get("msg");
+                if (msg != null && msg.equalsIgnoreCase("DONE")) {
+                    Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show();
+                } else {
+                    String informationMessage = "Failed to complete the payment";
+                    displayMessageDialog("PUT fail", informationMessage);
+                }
+
+                // exit from activity
+                this.finish();
+                this.overridePendingTransition(R.anim.stay_in, R.anim.bottom_out);
+            }
         }
     }
 

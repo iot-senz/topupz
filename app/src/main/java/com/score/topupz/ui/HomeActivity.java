@@ -22,8 +22,8 @@ import com.score.topupz.utils.PreferenceUtils;
 public class HomeActivity extends Activity implements View.OnClickListener {
 
     // UI components
-    private RelativeLayout relativeLayoutBill;
     private RelativeLayout relativeLayoutTopUp;
+    private RelativeLayout relativeLayoutBill;
     private RelativeLayout relativeLayoutSettings;
 
     private TextView billText;
@@ -56,12 +56,12 @@ public class HomeActivity extends Activity implements View.OnClickListener {
     public void initUi() {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
-        relativeLayoutBill = (RelativeLayout) findViewById(R.id.bill_layout);
         relativeLayoutTopUp = (RelativeLayout) findViewById(R.id.topup_layout);
+        relativeLayoutBill = (RelativeLayout) findViewById(R.id.bill_layout);
         relativeLayoutSettings = (RelativeLayout) findViewById(R.id.settings_layout);
 
-        relativeLayoutBill.setOnClickListener(HomeActivity.this);
         relativeLayoutTopUp.setOnClickListener(HomeActivity.this);
+        relativeLayoutBill.setOnClickListener(HomeActivity.this);
         relativeLayoutSettings.setOnClickListener(HomeActivity.this);
 
         billIcon = (TextView) findViewById(R.id.bill_icon);
@@ -117,7 +117,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
      */
     public void onClick(View view) {
         if (view == relativeLayoutBill) {
-            navigateToBillActivity();
+            //navigateToBillActivity();
         } else if (view == relativeLayoutTopUp) {
             // display top up activity
             startActivity(new Intent(HomeActivity.this, TopupActivity.class));

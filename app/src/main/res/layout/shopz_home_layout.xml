@@ -63,37 +63,6 @@
         <!--android:background="@drawable/login_button_selector" >-->
         <!--</Button>-->
         <!--</LinearLayout>-->
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:id="@+id/bill_layout"
-            android:background="@drawable/app_button_selector"
-            android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="70dp"
-                android:id="@+id/bill_icon"
-                android:layout_height="70dp"
-                android:layout_marginLeft="20dp"
-                android:gravity="center"
-                android:text="$"
-                android:textColor="#fff"
-                android:textSize="30sp"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/circle_shape_blue"
-                android:layout_centerVertical="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:textSize="35sp"
-                android:layout_marginLeft="38dp"
-                android:layout_centerInParent="true"
-                android:id="@+id/bill_text"
-                android:layout_toRightOf="@+id/bill_icon"
-                android:text="Bill"
-                android:textColor="#b5c976"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -126,6 +95,39 @@
                 android:textColor="#b5c976"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:id="@+id/bill_layout"
+            android:background="@drawable/app_button_selector"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="70dp"
+                android:id="@+id/bill_icon"
+                android:layout_height="70dp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:text="$"
+                android:textColor="#fff"
+                android:textSize="30sp"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/circle_shape_blue"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:textSize="35sp"
+                android:layout_marginLeft="38dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/bill_text"
+                android:layout_toRightOf="@+id/bill_icon"
+                android:text="History"
+                android:textColor="#b5c976"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
 
         <!--<LinearLayout-->
         <!--android:layout_width="fill_parent"-->
