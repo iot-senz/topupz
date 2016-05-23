@@ -48,7 +48,7 @@ public class TopupActivity extends Activity {
         setContentView(R.layout.topup_layout);
 
         initNfc();
-        initActionBar();
+        //initActionBar();
     }
 
     /**
