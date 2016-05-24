@@ -30,7 +30,7 @@ public class LaunchActivity extends Activity {
             initSenzService();
 
             // have user, so move to home
-            Intent intent = new Intent(this, TopupActivity.class);
+            Intent intent = new Intent(this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             finish();
             startActivity(intent);

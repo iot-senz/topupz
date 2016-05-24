@@ -9,13 +9,13 @@
             android:shape="rectangle">
 
             <gradient
-                android:startColor="#dddada"
-                android:endColor="#dddada"
+                android:startColor="#80dddada"
+                android:endColor="#80dddada"
                 android:angle="270" />
 
-            <stroke android:width="2dip" android:color="#DADADC"/>
+            <stroke android:width="0dip" android:color="#DADADC"/>
             <corners
-                android:radius="3dp"/>
+                android:radius="0dp"/>
 
         </shape>
 
@@ -30,14 +30,14 @@
             android:shape="rectangle">
 
             <gradient
-                android:startColor="#ffffff"
-                android:endColor="#ffffff"
+                android:startColor="#26ffffff"
+                android:endColor="#26ffffff"
                 android:angle="270"/>
 
-            <stroke android:width="2dip" android:color="#DADADC"/>
+            <stroke android:width="0dip" android:color="#DADADC"/>
 
             <corners
-                android:radius="3dp"/>
+                android:radius="0dp"/>
 
         </shape>
 

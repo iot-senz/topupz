@@ -3,10 +3,12 @@ package com.score.topupz.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,11 +45,11 @@ public class HomeActivity extends Activity implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.shopz_home_layout);
-        typeface = Typeface.createFromAsset(getAssets(), "fonts/vegur_2.otf");
 
         initUi();
-        initActionBar();
+        //initActionBar();
     }
 
     /**
@@ -88,7 +90,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.
         final ActionBar actionBar = getActionBar();
-        actionBar.setBackgroundDrawable(new ColorDrawable(0xff666666));
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // initialize action bar title with current user
         try {

@@ -2,51 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#fff"
+    android:background="@drawable/road1"
     android:orientation="vertical" >
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:background="#306d97"
-        android:visibility="gone"
-        android:layout_marginBottom="12dp">
-
-        <!--<ImageView-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:src="@drawable/sdbl_logo"-->
-        <!--android:id="@+id/mbank_icon"-->
-        <!--android:layout_centerHorizontal="true"/>-->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SHOP ABC"
-            android:id="@+id/textView"
-            android:textSize="40sp"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
-
-        <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:textSize="35sp"-->
-        <!--android:layout_marginLeft="38dp"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:id="@+id/mbank_text"-->
-        <!--android:layout_toRightOf="@+id/mbank_icon"-->
-        <!--android:text="MBank"-->
-        <!--android:textColor="#ffffff"-->
-        <!--android:layout_height="wrap_content" />-->
-    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:layout_margin="10dp"
+        android:layout_margin="0dp"
         android:orientation="vertical" >
 
         <!--<LinearLayout-->
@@ -69,30 +32,30 @@
             android:id="@+id/topup_layout"
             android:background="@drawable/app_button_selector"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
+            android:gravity="center"
             android:clickable="true"
             android:layout_weight="1">
             <TextView
-                android:layout_width="70dp"
+                android:layout_width="55dp"
                 android:id="@+id/topup_icon"
-                android:layout_height="70dp"
-                android:layout_marginLeft="20dp"
+                android:layout_height="55dp"
                 android:gravity="center"
                 android:text="$"
                 android:textColor="#fff"
-                android:textSize="30sp"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/circle_shape_blue"
+                android:textSize="25sp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/circle_shape_red"
                 android:layout_centerVertical="true"/>
             <TextView
                 android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
                 android:textSize="35sp"
-                android:layout_marginLeft="38dp"
-                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/topup_text"
-                android:layout_toRightOf="@+id/topup_icon"
-                android:text="Top Up"
-                android:textColor="#b5c976"
+                android:layout_below="@+id/topup_icon"
+                android:text="TopUp"
+                android:textColor="#ffc027"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
@@ -101,30 +64,30 @@
             android:id="@+id/bill_layout"
             android:background="@drawable/app_button_selector"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:layout_marginBottom="0dp"
             android:clickable="true"
             android:layout_weight="1">
             <TextView
-                android:layout_width="70dp"
+                android:layout_width="55dp"
                 android:id="@+id/bill_icon"
-                android:layout_height="70dp"
-                android:layout_marginLeft="20dp"
+                android:layout_height="55dp"
                 android:gravity="center"
                 android:text="$"
                 android:textColor="#fff"
-                android:textSize="30sp"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/circle_shape_blue"
+                android:textSize="25sp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/circle_shape_red"
                 android:layout_centerVertical="true"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:textSize="35sp"
-                android:layout_marginLeft="38dp"
-                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/bill_text"
-                android:layout_toRightOf="@+id/bill_icon"
-                android:text="History"
-                android:textColor="#b5c976"
+                android:layout_below="@+id/bill_icon"
+                android:text="TopUp History"
+                android:textColor="#ffc027"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
@@ -165,28 +128,27 @@
             android:clickable="true"
             android:background="@drawable/app_button_selector"
             android:layout_height="fill_parent"
+            android:gravity="center"
             android:layout_weight="1">
             <TextView
-                android:layout_width="70dp"
+                android:layout_width="55dp"
                 android:id="@+id/settings_icon"
-                android:layout_height="70dp"
-                android:layout_marginLeft="20dp"
+                android:layout_height="55dp"
                 android:gravity="center"
                 android:text="$"
                 android:textColor="#fff"
                 android:textSize="30sp"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/circle_shape_blue"
-                android:layout_centerVertical="true"/>
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/circle_shape_red" />
             <TextView
                 android:layout_width="wrap_content"
                 android:textSize="35sp"
-                android:layout_marginLeft="38dp"
-                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/settings_text"
-                android:layout_toRightOf="@+id/settings_icon"
-                android:text="Settings"
-                android:textColor="#b5c976"
+                android:layout_below="@+id/settings_icon"
+                android:text="App Settings"
+                android:textColor="#ffc027"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
