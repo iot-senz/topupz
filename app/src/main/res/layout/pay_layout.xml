@@ -41,7 +41,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="You gonna make Top Up \n with PayZ. Please tap below to confirm"
+                android:text="You gonna make Top Up \n payment with PayZ. Please tap below to confirm"
                 android:textColor="#fff"
                 android:textSize="20sp"
                 android:visibility="visible"></TextView>

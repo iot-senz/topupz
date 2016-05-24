@@ -5,15 +5,17 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
-import android.nfc.Tag;
 import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,10 +47,11 @@ public class TopupActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.topup_layout);
 
         initNfc();
-        //initActionBar();
+        initActionBar();
     }
 
     /**
@@ -82,31 +85,31 @@ public class TopupActivity extends Activity {
     @Override
     public void onNewIntent(Intent intent) {
         String action = intent.getAction();
-        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-
         Log.d(TAG, "New intent action " + action);
-        Log.d(TAG, "New intent tag " + tag.toString());
 
-        // parse through all NDEF messages and their records and pick text type only
-        // we only send one NDEF message(as a JSON string)
-        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        if (data != null) {
-            NdefMessage message = (NdefMessage) data[0];
-            String jsonString = new String(message.getRecords()[0].getPayload());
+        if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED) || action.equals(NfcAdapter.ACTION_TECH_DISCOVERED)
+                || action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+            // parse through all NDEF messages and their records and pick text type only
+            // we only send one NDEF message(as a JSON string)
+            Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            if (data != null) {
+                NdefMessage message = (NdefMessage) data[0];
+                String jsonString = new String(message.getRecords()[0].getPayload());
 
-            try {
-                // parse JSON and get Pay
-                TopUp payz = JSONUtils.getTopUp(jsonString);
+                try {
+                    // parse JSON and get Pay
+                    TopUp payz = JSONUtils.getTopUp(jsonString);
 
-                // launch pay activity
-                Intent mapIntent = new Intent(this, PayActivity.class);
-                mapIntent.putExtra("EXTRA", payz);
-                startActivity(mapIntent);
-                overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    // launch pay activity
+                    Intent mapIntent = new Intent(this, PayActivity.class);
+                    mapIntent.putExtra("EXTRA", payz);
+                    startActivity(mapIntent);
+                    overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
+                } catch (JSONException e) {
+                    e.printStackTrace();
 
-                Toast.makeText(this, "[ERROR] Invalid data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "[ERROR] Invalid data", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
@@ -121,9 +124,10 @@ public class TopupActivity extends Activity {
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.
         final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Top Up");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(0xff666666));
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setTitle("");
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //getActionBar().setBackgroundDrawable(new ColorDrawable(0xff666666));
 
         // set custom font for
         //  1. action bar title
@@ -132,6 +136,7 @@ public class TopupActivity extends Activity {
         TextView actionBarTitle = (TextView) (findViewById(titleId));
         actionBarTitle.setTextColor(getResources().getColor(R.color.white));
         actionBarTitle.setTypeface(typeface);
+        actionBar.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
     }
 
     /**
