@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/freee"
+    android:background="@drawable/road1"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -86,7 +86,7 @@
                             android:paddingLeft="15dp"
                             android:singleLine="true"
                             android:cursorVisible="true"
-                            android:textColor="#b5c976"
+                            android:textColor="#ffc027"
                             android:textColorHint="#cdcbcb"
                             android:textSize="16sp"
                             android:textStyle="bold">
@@ -138,7 +138,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:text="Sign up"
-                            android:textColor="#b5c976"
+                            android:textColor="#ffc027"
                             android:textSize="16sp"
                             android:textStyle="bold"></TextView>
                     </RelativeLayout>
