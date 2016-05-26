@@ -147,7 +147,7 @@
                 android:layout_centerHorizontal="true"
                 android:id="@+id/settings_text"
                 android:layout_below="@+id/settings_icon"
-                android:text="App Settings"
+                android:text="Settings"
                 android:textColor="#ffc027"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
