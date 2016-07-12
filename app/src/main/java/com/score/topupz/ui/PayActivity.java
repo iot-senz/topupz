@@ -198,7 +198,7 @@ public class PayActivity extends Activity implements View.OnClickListener {
         ActivityUtils.hideSoftKeyboard(this);
 
         if (NetworkUtil.isAvailableNetwork(this)) {
-            displayInformationMessageDialog("Please confirm the Top Up of $" + topUp.getAmount());
+            displayInformationMessageDialog("Please confirm the topup of $" + topUp.getAmount());
         } else {
             displayMessageDialog("#ERROR", "No network connection");
         }

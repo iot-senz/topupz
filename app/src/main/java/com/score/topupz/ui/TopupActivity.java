@@ -14,7 +14,6 @@ import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -148,6 +147,8 @@ public class TopupActivity extends Activity {
         if (nfcAdapter == null) {
             Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
         } else {
+            nfcAdapter.setNdefPushMessage(null, this);
+
             // create an intent with tag data and deliver to this activity
             nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 

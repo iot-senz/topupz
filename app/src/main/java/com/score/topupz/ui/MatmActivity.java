@@ -228,9 +228,11 @@ public class MatmActivity extends Activity implements NfcAdapter.CreateNdefMessa
         if (nfcAdapter == null) {
             Toast.makeText(this, "[ERROR] No NFC supported", Toast.LENGTH_LONG).show();
         } else {
+            nfcAdapter.setNdefPushMessage(null, this);
+
             // set listeners to receive data
-            nfcAdapter.setNdefPushMessageCallback(this, this);
-            nfcAdapter.setOnNdefPushCompleteCallback(this, this);
+            //nfcAdapter.setNdefPushMessageCallback(this, this);
+            //nfcAdapter.setOnNdefPushCompleteCallback(this, this);
 
             // create an intent with tag data and deliver to this activity
             nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
