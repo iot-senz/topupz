@@ -86,28 +86,30 @@ public class TopupActivity extends Activity {
         String action = intent.getAction();
         Log.d(TAG, "New intent action " + action);
 
-        if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED) || action.equals(NfcAdapter.ACTION_TECH_DISCOVERED)
-                || action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-            // parse through all NDEF messages and their records and pick text type only
-            // we only send one NDEF message(as a JSON string)
-            Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            if (data != null) {
-                NdefMessage message = (NdefMessage) data[0];
-                String jsonString = new String(message.getRecords()[0].getPayload());
+        if (action != null) {
+            if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED) || action.equals(NfcAdapter.ACTION_TECH_DISCOVERED)
+                    || action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+                // parse through all NDEF messages and their records and pick text type only
+                // we only send one NDEF message(as a JSON string)
+                Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+                if (data != null) {
+                    NdefMessage message = (NdefMessage) data[0];
+                    String jsonString = new String(message.getRecords()[0].getPayload());
 
-                try {
-                    // parse JSON and get Pay
-                    TopUp payz = JSONUtils.getTopUp(jsonString);
+                    try {
+                        // parse JSON and get Pay
+                        TopUp payz = JSONUtils.getTopUp(jsonString);
 
-                    // launch pay activity
-                    Intent mapIntent = new Intent(this, PayActivity.class);
-                    mapIntent.putExtra("EXTRA", payz);
-                    startActivity(mapIntent);
-                    overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                        // launch pay activity
+                        Intent mapIntent = new Intent(this, PayActivity.class);
+                        mapIntent.putExtra("EXTRA", payz);
+                        startActivity(mapIntent);
+                        overridePendingTransition(R.anim.bottom_in, R.anim.stay_in);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
 
-                    Toast.makeText(this, "[ERROR] Invalid data", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "[ERROR] Invalid data", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         }

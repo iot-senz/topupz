@@ -161,18 +161,20 @@ public class MatmActivity extends Activity implements NfcAdapter.CreateNdefMessa
         String action = intent.getAction();
         Log.d(TAG, "New intent action " + action);
 
-        if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED) || action.equals(NfcAdapter.ACTION_TECH_DISCOVERED)
-                || action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-            // parse through all NDEF messages and their records and pick text type only
-            // we only send one NDEF message(as a JSON string)
-            Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            if (data != null) {
-                NdefMessage message = (NdefMessage) data[0];
-                receivedKey = new String(message.getRecords()[0].getPayload());
-                Log.d(TAG, "NFC Data received, " + receivedKey);
+        if (action != null) {
+            if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED) || action.equals(NfcAdapter.ACTION_TECH_DISCOVERED)
+                    || action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+                // parse through all NDEF messages and their records and pick text type only
+                // we only send one NDEF message(as a JSON string)
+                Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+                if (data != null) {
+                    NdefMessage message = (NdefMessage) data[0];
+                    receivedKey = new String(message.getRecords()[0].getPayload());
+                    Log.d(TAG, "NFC Data received, " + receivedKey);
 
-                // TODO process receive data
-                onClickPut();
+                    // TODO process receive data
+                    onClickPut();
+                }
             }
         }
     }
